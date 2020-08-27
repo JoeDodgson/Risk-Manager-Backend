@@ -1,11 +1,10 @@
 // File collect all routes and export in one folder
-const auth = require ("./models/authorisation");
-const disciplines = require ("./models/disciplines");
-const project = require ("./models/project");
-const risk = require ("./models/risk");
-const status = require ("./models/status");
-const user = require ("./models/user");
-
+const auth = require ("./authorisation");
+const disciplines = require ("./disciplines");
+const project = require ("./project");
+const risk = require ("./risk");
+const status = require ("./status");
+const user = require ("./user");
 
 module.exports = {
     // Create

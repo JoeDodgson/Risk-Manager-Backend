@@ -1,4 +1,4 @@
-const db = require("../../db/index");
+const db = require("../db/index");
 
 function createAuth(body) {
     console.log("Creating Auth...");
