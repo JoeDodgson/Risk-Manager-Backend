@@ -37,8 +37,8 @@ const UserSchema = new mongoose.Schema({
         ref: "Project"
     }],
     company: {
-        type: Schema.Types.ObjectId,
-        ref: "Company"
+        type: String,
+        validate: [({ length }) => length <= 100, "Authorisation Status should be less than 100 characters."]
     }
 });
 // use this function to hash the password before saving to database

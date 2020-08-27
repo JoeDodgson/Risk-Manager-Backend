@@ -7,5 +7,4 @@ module.exports = {
     User: require("./models/user"),
     Authorisation: require("./models/authorisation"),
     Project: require("./models/project"),
-    Company: require("./models/company")
 };

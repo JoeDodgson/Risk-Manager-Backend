@@ -5,7 +5,6 @@ const project = require ("./models/project");
 const risk = require ("./models/risk");
 const status = require ("./models/status");
 const user = require ("./models/user");
-const company = require("./models/company");
 
 
 module.exports = {
@@ -16,13 +15,11 @@ module.exports = {
     createRisk: risk[0],
     createStatus: status[0],
     createUser: user[0],
-    createCompany: company[0],
     // Delete
     deleteAuth: auth[1],
     deleteDiscipline: disciplines[1],
     deleteProject: project[1],
     deleteStatus: status[1],
-    deleteCompany: company[1],
     // Get
     getRisk: risk[2],
     getUserData: user[2],
