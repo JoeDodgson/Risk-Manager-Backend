@@ -35,7 +35,11 @@ const UserSchema = new mongoose.Schema({
     project: [{
         type: Schema.Types.ObjectId,
         ref: "Project"
-    }]
+    }],
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: "Company"
+    }
 });
 // use this function to hash the password before saving to database
 // this is mongoose midleware, once saved it will go to next

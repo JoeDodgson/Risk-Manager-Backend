@@ -6,5 +6,6 @@ module.exports = {
     Status: require("./models/status"),
     User: require("./models/user"),
     Authorisation: require("./models/authorisation"),
-    Project: require("./models/project")
+    Project: require("./models/project"),
+    Company: require("./models/company")
 };
