@@ -1,4 +1,4 @@
-const db = require("../../db/index");
+const db = require("../db/index");
 
 //------------- USER -------------
 
@@ -46,7 +46,8 @@ function changeUserData(body) {
         password: body.password,
         designDiscipline: body.designDiscipline,
         authorisation: body.authorisation,
-        project: body.project
+        project: body.project,
+        company: body.company
     }})
         .then(console.log("-------update success-------"))
         .catch(err => {
