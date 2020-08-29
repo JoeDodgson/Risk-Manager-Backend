@@ -12,7 +12,7 @@ const RisksSchema = new Schema({
         validate: [({ length }) => length <= 1000, "Description should be less than 1000 characters."]
     },
     designDiscipline: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Disciplines"
     },
     dateRaised: {
@@ -20,7 +20,7 @@ const RisksSchema = new Schema({
         default: Date.now()
     },
     status: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Status"
     },
     location: {
