@@ -18,7 +18,7 @@ function createProject(body) {
 
 function deleteProject(classname) {
     console.log("Deleting...");
-    db.Authorisation.remove({ title: classname })
+    db.Project.remove({ title: classname })
         .then(console.log("Successfully Deleted"))
         .catch(err => {
             console.log(err);

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
 
-const UserSchema = new mongoose.Schema({
+const UserSchema = new Schema({
     email: {
         type: String,
         unique: true,
@@ -33,7 +33,7 @@ const UserSchema = new mongoose.Schema({
         ref: "Authorisation"
     },
     project: [{
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Project"
     }],
     company: {
