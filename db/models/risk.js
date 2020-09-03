@@ -7,21 +7,29 @@ const RisksSchema = new Schema({
         type: String,
         validate: [({ length }) => length <= 250, "Title should be less than 250 characters."]
     },
+    riskId: {
+        type: String,
+        validate: [({ length }) => length <= 10, "riskId should be less than 10 characters."],
+        required: true
+    },
     description: {
         type: String,
         validate: [({ length }) => length <= 1000, "Description should be less than 1000 characters."]
     },
     designDiscipline: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Disciplines"
+        type: String,
+        ref: "Disciplines",
+        validate: [({ length }) => length <= 50, "Description should be less than 50 characters."]
     },
     dateRaised: {
         type: Date,
         default: Date.now()
     },
     status: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Status"
+        type: Number,
+        ref: "Status",
+        min: 1,
+        max: 3
     },
     location: {
         type: Array,
@@ -44,6 +52,10 @@ const RisksSchema = new Schema({
         type: Number,
         min: 1,
         max: 25
+    },
+    projectId: {
+        type: Schema.Types.ObjectId,
+        ref: "Project"
     }
 });
 
@@ -51,6 +63,6 @@ function arrayLimit(val) {
     return val.length <= 2;
 }
 
-const Risks = mongoose.model("Risks", RisksSchema);
+const Risk = mongoose.model("Risk", RisksSchema);
 
-module.exports = Risks;
+module.exports = Risk;
