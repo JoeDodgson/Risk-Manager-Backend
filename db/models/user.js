@@ -24,16 +24,8 @@ const UserSchema = new Schema({
         required: "Password is Required",
         validate: [({ length }) => length >= 6, "Password should be longer."]
     },
-    designDiscipline: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Disciplines"
-    },
-    authorisation: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Authorisation"
-    },
     project: [{
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "Project"
     }],
     company: {
