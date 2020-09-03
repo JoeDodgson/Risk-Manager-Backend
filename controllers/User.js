@@ -4,7 +4,7 @@ const signToken = require("../middleware/jwt");
 module.exports = {
   // Creating register route
   userRegister: (req, res) => {
-    const { email, firstName, lastName, password, project, company } = req.body;
+    const { email, firstName, lastName, project, company } = req.body;
     // Find User by email
     User.findOne({ email }, (err, user) => {
       // if there is an error finding user
@@ -23,7 +23,6 @@ module.exports = {
           email,
           firstName,
           lastName,
-          password,
           project,
           company,
         });
@@ -55,7 +54,7 @@ module.exports = {
     // if authenticated
     if (req.isAuthenticated()) {
       // get the user info from user object
-      const { _id, email, firstName, lastName, password } = req.user;
+      const { _id, email, firstName, lastName, project, company } = req.user;
       // create a JWT token using "_id"
       const token = signToken(_id);
       // setting cookie,
@@ -64,7 +63,7 @@ module.exports = {
       res.cookie("access_token", token, { httpOnly: true, sameSite: true });
       res.status(200).json({
         isAuthenticated: true,
-        user: { email, firstName, lastName, password },
+        user: { email, firstName, lastName, project, company },
       });
     }
   },
@@ -85,42 +84,64 @@ module.exports = {
 
   // Get single user info
   getUserData: (req, res) => {
-    User.find({ _id: userid })
-      .then((userData) => {
-        console.log("\n Success \n -------DATA BELOW-------");
-        console.log(userData);
-        return userData;
+    User.find({ _id: req.params.id })
+    .then((user, err) => {
+        console.log(user[0].email);
+        // const { email, firstName, lastName, project, company } = user;
+        // if user exist pass data with confirmation
+        if (user !== null)
+          res.status(201).json({
+            message: {
+              msgBody: "The user data is ready to analyse! ",
+              msgErr: true,
+            },
+            data: { 
+                email:user[0].email, 
+                firstName : user[0].firstName, 
+                lastName : user[0].lastName, 
+                project : user[0].project, 
+                company : user[0].company
+             },
+          });
       })
       .catch((err) => {
-        console.log("failed");
-        return err;
+        res
+          .status(422)
+          .json({ message: { msgBody: "Error has occured", msgErr: true } });
       });
   },
 
   // Change User Data
   updateUser: (req, res) => {
     // pass in parameter should be userid
-    const userid = req.body.userid;
+    const userid = req.body.id;
     User.update(
       { _id: userid },
       {
         $set: {
-          email: body.email,
-          firstName: body.firstName,
-          lastName: body.lastName,
-          password: body.password,
-          designDiscipline: body.designDiscipline,
-          authorisation: body.authorisation,
-          project: body.project,
-          company: body.company,
+          email: req.body.email,
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          password: req.body.password,
+          project: req.body.project,
+          company: req.body.company,
         },
       }
     )
-      .then(console.log("-------update success-------"))
-      .catch((err) => {
-        console.log("---Update failed---");
-        console.log(err);
-      });
+      .then((newUser) => {
+        res.status(200).json({
+          message: {
+            msgBody: "All The User data successfully updated !",
+            msgErr: false,
+          },
+          data: { newUser },
+        });
+      })
+      .catch((err) =>
+        res
+          .status(422)
+          .json({ message: { msgBody: "Error has occured", msgErr: true } })
+      );
   },
 };
 // ------------- USER END -------------
