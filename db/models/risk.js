@@ -32,8 +32,12 @@ const RisksSchema = new Schema({
         max: 3
     },
     location: {
-        type: Array,
-        validate: [arrayLimit, '{PATH} exceeds the limit of 2']
+        lat: {
+           type: Number
+        },
+        lng: {
+           type: Number
+        }
     },
     comments: {
         type: Array
