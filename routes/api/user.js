@@ -22,8 +22,8 @@ userRouter.get("/logout", passportJWT, userController.userLogout);
 // using this endpoint, when user visit the website next time user will still stay login
 userRouter.get('/authenticated', passportJWT, userController.authedUser);
 // get user info route
-userRouter.get("/info", passportJWT, userController.getUserData);
+userRouter.get("/info/:id", passportJWT, userController.getUserData);
 // update info route
-userRouter.put("/update", passportJWT, userController.updateUser);
+userRouter.put("/update/:id", passportJWT, userController.updateUser);
 
 module.exports = userRouter;
