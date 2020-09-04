@@ -3,7 +3,7 @@ const { Risk } = require("../db/index");
 module.exports = {
 // create a risk
   createRisk: (req, res) => {
-    const title = req.body.title;
+    const {title} = req.body;
     //  before create a new risk check if it is exist
     Risk.findOne({ title }).then((data) => {
       // if risk exists in DB, can't save to DB
@@ -66,12 +66,13 @@ module.exports = {
   getRisk: (req, res) => {
     Risk.findById(req.params.id)
       .then((risk, err) => {
+        console.log(err);
         // if risk exists in DB, can't save to DB
-        if (risk !== null)
+        if (risk)
           res.status(201).json({
             message: {
-              msgBody: "The Risk data is ready to analyse! ",
-              msgErr: true,
+              msgBody: "Risk successfully returned ",
+              msgErr: false,
             },
             data: { risk },
           });
@@ -98,21 +99,21 @@ module.exports = {
       risk,
     } = req.body;
     // pass in parameter should be riskid
-    const riskid = req.params.id;
+    const _id = req.params.id;
     Risk.findOneAndUpdate(
-      { _id: riskid },
+      { _id },
       {
         $set: {
-          title: title,
-          riskId: riskId,
-          description: description,
-          designDiscipline: designDiscipline,
-          status: status,
-          location: location,
-          comments: comments,
-          likelihood: likelihood,
-          severity: severity,
-          risk: risk,
+          title,
+          riskId,
+          description,
+          designDiscipline,
+          status,
+          location,
+          comments,
+          likelihood,
+          severity,
+          risk
         },
       }
     )

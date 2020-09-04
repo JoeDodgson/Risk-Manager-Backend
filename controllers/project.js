@@ -3,13 +3,13 @@ const { Project } = require("../db/index");
 module.exports = {
 
 // get all the project sort by date
-getAllProjects : (req, res) => {
-  Project.find(req.body)
+getAllProjects : (req, res) => { 
+  Project.find({})
     .sort({ date: -1 })
     .then((dbModel) =>
       res.status(200).json({
         message: {
-          msgBody: "All The approved Engineering Projects",
+          msgBody: "All Projects",
           msgErr: false,
         },
         data: { dbModel },
@@ -27,11 +27,11 @@ getAllProjects : (req, res) => {
     Project.findById(req.params.id)
       .then((project, err) => {
         // if project exists in DB, can't save to DB
-        if (project !== null)
+        if (project)
           res.status(201).json({
             message: {
               msgBody: "The Project data is ready to analyse! ",
-              msgErr: true,
+              msgErr: false,
             },
             data: { project },
           });
@@ -45,11 +45,11 @@ getAllProjects : (req, res) => {
 
 // create a new project
 createProject : (req, res) => {
-  const title = req.body.title;
+  const {title} = req.body;
   //  before create a new project check if it is exist
   Project.findOne({ title }).then((data) => {
     // if project exists in DB, can't save to DB
-    if (data !== null)
+    if (data)
       res.status(400).json({
         message: {
           msgBody: "This Project is already taken",
@@ -77,7 +77,7 @@ createProject : (req, res) => {
         client,
         teamMembers,
       });
-      newProject.save((err, newPro) => {
+      newProject.save((err, data) => {
         if (err)
           // if error occurs when saving to DB
           res
@@ -90,7 +90,7 @@ createProject : (req, res) => {
               msgBody: "Project successfully created",
               msgErr: false,
             },
-            data: { newPro },
+            data: { data },
           });
         }
       });

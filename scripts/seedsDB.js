@@ -10,11 +10,11 @@ const projectSeed = [
     title: "title1",
     description: "discription1",
     location: {
-      lat: -1.5,
-      lng: 51.151651,
+      lat: 52.505333,
+      lng: -1.923352,
     },
-    startDate: "01/09/2020",
-    endDate: "30/08/2021",
+    startDate: "2021/06/02",
+    endDate: "2023/04/19",
     client: "client1",
     teamMembers: ["member1", "member3", "member5"],
   },
@@ -22,11 +22,11 @@ const projectSeed = [
     title: "title2",
     description: "discription2",
     location: {
-      lat: -1.4,
-      lng: 48.151651,
+      lat: 52.506752,
+      lng: -1.927523,
     },
-    startDate: "01/10/2020",
-    endDate: "30/09/2021",
+    startDate: "2021/02/05",
+    endDate: "2020/12/18",
     client: "client2",
     teamMembers: ["member1", "member2", "member4"],
   },
@@ -34,11 +34,11 @@ const projectSeed = [
     title: "title3",
     description: "discription3",
     location: {
-      lat: -1.35,
-      lng: 46.251651,
+      lat: 52.509752,
+      lng: -1.923867,
     },
-    startDate: "01/09/2020",
-    endDate: "30/08/2021",
+    startDate: "2020/12/12",
+    endDate: "2021/02/09",
     client: "client1",
     teamMembers: ["member1", "member3", "member5"],
   },
@@ -51,7 +51,7 @@ db.Project.remove({})
     process.exit(0);
   })
   .catch((err) => {
-    console.error(err);
+    console.error(`Error: controllers/Project.js - authedUser() - ${err}`);
     process.exit(1);
   });
 
@@ -64,12 +64,12 @@ db.Project.remove({})
         designDiscipline: "designDiscipline1",
         status: 2,
         location: {
-            lat: -1.5,
-            lng: 51.151651,
+            lat: 52.505641,
+            lng: -1.923124,
           },
-        likelihood:3,
+        likelihood:4,
         severity:4,
-        risk:15,
+        risk:8,
         projectId:"5f4eec89cc853f32ec03243e"         
     },
     {
@@ -79,12 +79,12 @@ db.Project.remove({})
         designDiscipline: "designDiscipline2",
         status: 2,
         location: {
-            lat: -1.5,
-            lng: 51.151651,
+            lat: 52.558125,
+            lng: -1.821516,
           },
         likelihood:3,
         severity:4,
-        risk:15,
+        risk:7,
         projectId:"5f4eec89cc853f32ec03243e"         
     },
     {
@@ -94,12 +94,12 @@ db.Project.remove({})
         designDiscipline: "designDiscipline3",
         status: 2,
         location: {
-            lat: -1.5,
-            lng: 51.151651,
+            lat: 52.652311,
+            lng: -1.126321,
           },
         likelihood:3,
         severity:4,
-        risk:15,
+        risk:7,
         projectId:"5f4eec89cc853f32ec03243e"
     },
   
@@ -113,6 +113,6 @@ db.Risk
     process.exit(0);
   })
   .catch(err => {
-    console.error(err);
+    console.error(`Error: controllers/risk.js - authedUser() - ${err}`);
     process.exit(1);
   });

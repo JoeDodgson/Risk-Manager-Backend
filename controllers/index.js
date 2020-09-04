@@ -5,23 +5,23 @@ const {userRegister, userLogin, userLogout, authedUser, getUserData, updateUser}
 
 module.exports = {
     // user functionalities
-    userRegister: userRegister,
-    userLogin : userLogin,
-    userLogout : userLogout,
-    authedUser : authedUser,
-    getUserData : getUserData,
-    updateUser : updateUser,
+    userRegister,
+    userLogin,
+    userLogout,
+    authedUser ,
+    getUserData,
+    updateUser,
 
     // project related functionalities
-    getAllProjects : getAllProjects,
-    getProject : getProject,
-    createProject : createProject,
-    deleteProject : deleteProject,
+    getAllProjects,
+    getProject,
+    createProject,
+    deleteProject,
     
     // Risk related functionalities
-    createRisk : createRisk,
-    getRisk : getRisk,
-    changeRisk : changeRisk
+    createRisk,
+    getRisk,
+    changeRisk
 
 };
 
