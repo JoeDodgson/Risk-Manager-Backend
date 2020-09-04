@@ -114,8 +114,8 @@ module.exports = {
   // Change User Data
   updateUser: (req, res) => {
     // pass in parameter should be userid
-    const userid = req.body.id;
-    User.update(
+    const userid = req.params.id;
+    User.updateOne(
       { _id: userid },
       {
         $set: {
