@@ -6,8 +6,9 @@ const riskController = require("../../controllers/index");
 
 const passportJWT = passport.authenticate('jwt', {session : false});
 
-// creating a new project and delete existing project
+// get all projects, get one single project, creating a new project and delete existing project
 projectRouter.get("/", passportJWT,  riskController.getAllProjects);
+projectRouter.get("/:id", passportJWT,  riskController.getProject);
 projectRouter.post("/", passportJWT,  riskController.createProject);
 projectRouter.delete("/:id", passportJWT, riskController.deleteProject);
 

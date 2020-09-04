@@ -1,6 +1,8 @@
 const { Project } = require("../db/index");
 
 module.exports = {
+
+// get all the project sort by date
 getAllProjects : (req, res) => {
   Project.find(req.body)
     .sort({ date: -1 })
@@ -20,6 +22,28 @@ getAllProjects : (req, res) => {
     );
 },
 
+ // Get a single project info  
+ getProject: (req, res) => {
+    Project.findById(req.params.id)
+      .then((project, err) => {
+        // if project exists in DB, can't save to DB
+        if (project !== null)
+          res.status(201).json({
+            message: {
+              msgBody: "The Project data is ready to analyse! ",
+              msgErr: true,
+            },
+            data: { project },
+          });
+      })
+      .catch((err) => {
+        res
+          .status(422)
+          .json({ message: { msgBody: "Error has occured", msgErr: true } });
+      });
+  },
+
+// create a new project
 createProject : (req, res) => {
   const title = req.body.title;
   //  before create a new project check if it is exist

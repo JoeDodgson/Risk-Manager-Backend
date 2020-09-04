@@ -25,6 +25,7 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/engineerdb", {
 }); 
 mongoose.set('useCreateIndex', true);
 
+// routes setting up
 const router = require('./routes/index');
 app.use('/api', router);
 

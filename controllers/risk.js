@@ -1,6 +1,7 @@
 const { Risk } = require("../db/index");
 
 module.exports = {
+// create a risk
   createRisk: (req, res) => {
     const title = req.body.title;
     //  before create a new risk check if it is exist
@@ -47,7 +48,7 @@ module.exports = {
               message: { msgBody: "Error has occured", msgErr: true },
             });
           else {
-            // without errors Project saved to DB
+            // without errors new risk will be save to DB
             res.status(201).json({
               message: {
                 msgBody: "New risk successfully created",
@@ -61,12 +62,10 @@ module.exports = {
     });
   },
 
-  // Get single user info
-  // CAUTION!!! Security issue (will send back password as well)
+  // Get a single risk info  
   getRisk: (req, res) => {
     Risk.findById(req.params.id)
       .then((risk, err) => {
-        console.log(risk, err);
         // if risk exists in DB, can't save to DB
         if (risk !== null)
           res.status(201).json({
@@ -84,8 +83,7 @@ module.exports = {
       });
   },
 
-  // Change User Data
-  // CAUTION NEED TO DISCUSS WHAT NEED TO CHANGE AND WHAT CANT
+  // Change Risk Data  
   changeRisk: (req, res) => {
     const {
       title,
@@ -99,7 +97,7 @@ module.exports = {
       severity,
       risk,
     } = req.body;
-    // pass in parameter should be userid
+    // pass in parameter should be riskid
     const riskid = req.params.id;
     Risk.findOneAndUpdate(
       { _id: riskid },
@@ -121,7 +119,7 @@ module.exports = {
       .then((updatedRisk) => {
         res.status(200).json({
           message: {
-            msgBody: "All The risk data successfully updated !",
+            msgBody: "Risk successfully updated",
             msgErr: false,
           },
           data: { updatedRisk },

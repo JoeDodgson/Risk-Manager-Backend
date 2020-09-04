@@ -1,5 +1,5 @@
 // File collect all routes and export in one folder
-const {getAllProjects, createProject, deleteProject} = require ("./project");
+const {getAllProjects, getProject, createProject, deleteProject} = require ("./project");
 const {createRisk, getRisk, changeRisk} = require ("./risk");
 const {userRegister, userLogin, userLogout, authedUser, getUserData, updateUser} = require ("./user");
 
@@ -14,6 +14,7 @@ module.exports = {
 
     // project related functionalities
     getAllProjects : getAllProjects,
+    getProject : getProject,
     createProject : createProject,
     deleteProject : deleteProject,
     
