@@ -12,8 +12,12 @@ const ProjectSchema = new Schema({
         validate: [({ length }) => length <= 1000, "Title should be within 1000 characters."]
     },
     location: {
-        type: Array,
-        required: true 
+        lat: {
+           type: Number
+        },
+        lng: {
+           type: Number
+        }
     },
     startDate: {
         type: Date,
