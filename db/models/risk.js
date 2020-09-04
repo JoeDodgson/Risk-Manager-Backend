@@ -54,8 +54,8 @@ const RisksSchema = new Schema({
     },
     risk: {
         type: Number,
-        min: 1,
-        max: 25
+        min: 2,
+        max: 10
     },
     projectId: {
         type: Schema.Types.ObjectId,
