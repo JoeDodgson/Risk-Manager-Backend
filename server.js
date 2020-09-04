@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 require('dotenv').config();
@@ -12,6 +13,8 @@ const db = require("./db/index");
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors());
+
 
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/engineerdb", {
     useNewUrlParser: true,
@@ -22,8 +25,10 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/engineerdb", {
 }); 
 mongoose.set('useCreateIndex', true);
 
-const userRouter = require('./routes/User');
-app.use('/user', userRouter);
+// routes setting up
+const router = require('./routes/index');
+app.use('/api', router);
+
 
 
 app.listen(PORT, () => {
