@@ -55,7 +55,6 @@ db.Project.remove({})
     process.exit(1);
   });
 
-
   // This file empties the risks collection and inserts the books below
   const riskSeed = [   
     {
