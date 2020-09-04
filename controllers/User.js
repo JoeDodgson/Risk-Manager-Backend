@@ -4,7 +4,7 @@ const signToken = require("../middleware/jwt");
 module.exports = {
   // Creating register route
   userRegister: (req, res) => {
-    const { email, firstName, lastName, project, company } = req.body;
+    const { email, firstName, lastName, password, project, company } = req.body;
     // Find User by email
     User.findOne({ email }, (err, user) => {
       // if there is an error finding user
@@ -23,6 +23,7 @@ module.exports = {
           email,
           firstName,
           lastName,
+          password,
           project,
           company,
         });
@@ -85,9 +86,7 @@ module.exports = {
   // Get single user info
   getUserData: (req, res) => {
     User.find({ _id: req.params.id })
-    .then((user, err) => {
-        console.log(user[0].email);
-        // const { email, firstName, lastName, project, company } = user;
+    .then((user, err) => {       
         // if user exist pass data with confirmation
         if (user !== null)
           res.status(201).json({
@@ -144,4 +143,4 @@ module.exports = {
       );
   },
 };
-// ------------- USER END -------------
+
