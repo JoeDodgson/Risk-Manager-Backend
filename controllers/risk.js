@@ -1,20 +1,24 @@
+// Import the Risk 
 const { Risk } = require("../db/index");
 
 module.exports = {
-// create a risk
+  // Create a risk
   createRisk: (req, res) => {
-    const {title} = req.body;
-    //  before create a new risk check if it is exist
+    // Store the requested new risk title from the request
+    const { title } = req.body;
+
+    // Before creating new risk, check if it exists
     Risk.findOne({ title }).then((data) => {
-      // if risk exists in DB, can't save to DB
-      if (data !== null)
+      // If the risk exists in the DB, return 'bad request' 400 code
+      if (data) {
         res.status(400).json({
           message: {
             msgBody: "This Risk is already start taking control",
             msgErr: true,
           },
         });
-      //   else save data to the collection
+      }
+      // Else save the new risk to the collection using Mongoose
       else {
         const {
           title,
@@ -28,7 +32,7 @@ module.exports = {
           risk,
           projectId,
         } = req.body;
-        //If there is no Risk with that title, save as a new Risk
+
         const newRisk = new Risk({
           title,
           riskId,
@@ -41,14 +45,19 @@ module.exports = {
           risk,
           projectId,
         });
+
         newRisk.save((err, newRiskData) => {
-          if (err)
-            // if error occurs when saving to DB
+          if (err) {
+            // If error occurs when saving to DB, return 500 'Internal Server Error' code
             res.status(500).json({
-              message: { msgBody: "Error has occured", msgErr: true },
+              message: { 
+                msgBody: "An error occured creating your new risk",
+                msgErr: true,
+              },
             });
+          }
           else {
-            // without errors new risk will be save to DB
+            // If no error occurred, new risk was created so return 201 'Created' success code
             res.status(201).json({
               message: {
                 msgBody: "New risk successfully created",
@@ -62,30 +71,36 @@ module.exports = {
     });
   },
 
-  // Get a single risk info  
+  // Get data of a single risk
   getRisk: (req, res) => {
     Risk.findById(req.params.id)
       .then((risk, err) => {
-        console.log(err);
-        // if risk exists in DB, can't save to DB
+        // If risk exists in DB return to the user with 200 'OK' code
         if (risk)
-          res.status(201).json({
+          res.status(200).json({
             message: {
-              msgBody: "Risk successfully returned ",
+              msgBody: "Risk successfully returned",
               msgErr: false,
             },
             data: { risk },
           });
       })
+      // If the risk ID could not be found in the DB, return a 404 'Not Found' code
       .catch((err) => {
         res
-          .status(422)
-          .json({ message: { msgBody: "Error has occured", msgErr: true } });
+          .status(404)
+          .json({ 
+            message: {
+              msgBody: "Risk not found",
+              msgErr: true,
+            }
+          });
       });
   },
 
-  // Change Risk Data  
+  // Change risk data
   changeRisk: (req, res) => {
+    // Store the data from the request body
     const {
       title,
       riskId,
@@ -98,8 +113,11 @@ module.exports = {
       severity,
       risk,
     } = req.body;
-    // pass in parameter should be riskid
+
+    // Store the risk DB id from the request params
     const _id = req.params.id;
+
+    // Update the risk in the database using _id and the requested data
     Risk.findOneAndUpdate(
       { _id },
       {
@@ -117,19 +135,26 @@ module.exports = {
         },
       }
     )
-      .then((updatedRisk) => {
-        res.status(200).json({
+    .then((updatedRisk) => {
+      // If risk was successfully updated in DB, return to the user with 200 'OK' code
+      res.status(200).json({
+        message: {
+          msgBody: "Risk successfully updated",
+          msgErr: false,
+        },
+        data: { updatedRisk },
+      });
+    })
+    .catch((err) =>
+      // If the risk was not updated in the DB, return a 422 'Unprocessable Entity' code
+      res
+        .status(422)
+        .json({
           message: {
-            msgBody: "Risk successfully updated",
-            msgErr: false,
-          },
-          data: { updatedRisk },
-        });
-      })
-      .catch((err) =>
-        res
-          .status(422)
-          .json({ message: { msgBody: "Error has occured", msgErr: true } })
-      );
+            msgBody: "Error has occured",
+            msgErr: true,
+          } 
+        })
+    );
   },
 };
