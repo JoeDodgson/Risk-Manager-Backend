@@ -2,122 +2,195 @@ const { Project } = require("../db/index");
 
 module.exports = {
 
-// get all the project sort by date
-getAllProjects : (req, res) => { 
-  Project.find({})
-    .sort({ date: -1 })
-    .then((dbModel) =>
-      res.status(200).json({
-        message: {
-          msgBody: "All Projects",
-          msgErr: false,
-        },
-        data: { dbModel },
-      })
-    )
-    .catch((err) =>
-      res
-        .status(422)
-        .json({ message: { msgBody: "Error has occured", msgErr: true } })
-    );
-},
+  // Get all the projects from the DB. Sort by date
+  getAllProjects : (req, res) => { 
+    Project.find({})
+      .sort({ date: -1 })
+      .then(projectsData =>
+        // If project data was returned from the DB, return a 200 'OK' code
+        res
+          .status(200)
+          .json({
+            message: {
+              msgBody: "All project data successfully returned",
+              msgErr: false,
+            },
+            data: { projectsData },
+        })
+      )
+      // If an error was caught, return a 422 'Unprocessable Entity' code
+      .catch(err =>
+        res
+          .status(422)
+          .json({
+            message: {
+              msgBody: "Error has occured",
+              msgErr: true
+            }
+          })
+      );
+  },
 
- // Get a single project info  
- getProject: (req, res) => {
+  // Get the data of a single project  
+  getProject : (req, res) => {
+    // Search the database for the project using id from req.params
     Project.findById(req.params.id)
       .then((project, err) => {
-        // if project exists in DB, can't save to DB
-        if (project)
-          res.status(201).json({
+        // If the project was successfully returned, return a 200 'OK' code
+        if (project) {
+          res
+          .status(200)
+          .json({
             message: {
-              msgBody: "The Project data is ready to analyse! ",
+              msgBody: "Project data successfully returned",
               msgErr: false,
             },
             data: { project },
           });
+        }
+        // If the project was not returned, return a 404 'Not found' code
+        else {
+          res
+          .status(404)
+          .json({
+            message: {
+              msgBody: "Project not found",
+              msgErr: true,
+            }
+          });
+        }
       })
-      .catch((err) => {
+      // If an error was caught, return a 422 'Unprocessable Entity' code
+      .catch(err => {
         res
           .status(422)
-          .json({ message: { msgBody: "Error has occured", msgErr: true } });
+          .json({
+            message: {
+              msgBody: "An error occured",
+              msgErr: true,
+            }
+          });
       });
   },
 
-// create a new project
-createProject : (req, res) => {
-  const {title} = req.body;
-  //  before create a new project check if it is exist
-  Project.findOne({ title }).then((data) => {
-    // if project exists in DB, can't save to DB
-    if (data)
-      res.status(400).json({
-        message: {
-          msgBody: "This Project is already taken",
-          msgErr: true,
-        },
-      });
-    //   else save data to the collection
-    else {
-      const {
-        title,
-        description,
-        location,
-        startDate,
-        endDate,
-        client,
-        teamMembers,
-      } = req.body;
-      //If there is no project with that title, save as a new project
-      const newProject = new Project({
-        title,
-        description,
-        location,
-        startDate,
-        endDate,
-        client,
-        teamMembers,
-      });
-      newProject.save((err, data) => {
-        if (err)
-          // if error occurs when saving to DB
-          res
-            .status(500)
-            .json({ message: { msgBody: "Error has occured", msgErr: true } });
-        else {
-          // without errors Project saved to DB
-          res.status(201).json({
+  // Create a new project
+  createProject : (req, res) => {
+    // Store the title from the request body
+    const { title } = req.body;
+
+    // Before creating a new project, check if one already exists with this title
+    Project.findOne({ title })
+      .then(data => {
+        // If a project already exists with this title, return a 406 'Not Acceptable' code
+        if (data) {
+          res.status(406).json({
             message: {
-              msgBody: "Project successfully created",
-              msgErr: false,
+              msgBody: "A project with this title already exists",
+              msgErr: true,
             },
-            data: { data },
           });
         }
-      });
-    }
-  });
-},
+        // Else save the new project to the collection using Mongoose
+        else {
+          const {
+            title,
+            description,
+            location,
+            startDate,
+            endDate,
+            client,
+            teamMembers,
+          } = req.body;
 
-// deleting a project by it's id
-deleteProject :(req, res) => {
-  //   checking if it's exist
-  Project.findById(req.params.id)
-    //   then remove it using remove method
-    .then((data) => data.remove())
-    .then((projectData) => {
-      res.status(201).json({
-        message: {
-          msgBody: "Project successfully Deleted",
-          msgErr: false,
-        },
-        data: { projectData },
-      });
-    })
+          const newProject = new Project({
+            title,
+            description,
+            location,
+            startDate,
+            endDate,
+            client,
+            teamMembers,
+          });
 
-    .catch((err) =>
-      res
-        .status(422)
-        .json({ message: { msgBody: "Error has occured", msgErr: true } })
-    );
-}
+          newProject.save((err, newProjectData) => {
+            if (err) {
+              // If error occurs when saving to DB, return 500 'Internal Server Error' code
+              res
+                .status(500)
+                .json({
+                  message: { 
+                    msgBody: "An error occured when creating your new project",
+                    msgErr: true,
+                  }
+                });
+            }
+            else {
+              // If no error occurred, new risk was created so return 201 'Created' success code
+              res
+                .status(201)
+                .json({
+                  message: {
+                    msgBody: "You new project was successfully created",
+                    msgErr: false,
+                  },
+                  data: { newProjectData }
+                });
+            }
+          });
+        }
+      })
+      // If an error was caught, return a 422 'Unprocessable Entity' code
+      .catch(err =>
+        res
+          .status(422)
+          .json({
+            message: {
+              msgBody: "An error occured when creating your project",
+              msgErr: true,
+            }
+          })
+      );
+  },
+
+  // Delete a project by its id
+  deleteProject : (req, res) => {
+    // Check if the project exists in the DB using the id from req.params
+    Project.findById(req.params.id)
+      // Then remove it using remove method
+      .then(data => {
+        // If no project exists with this id, return a 406 'Not Acceptable' code
+        if (!data) {
+          res.status(406).json({
+            message: {
+              msgBody: "A project with this title already exists",
+              msgErr: true,
+            },
+          });
+        }
+        // If the project exists, delete it, return the deleted project with a 200 'OK' code
+        else {
+          data.remove()
+            .then(deletedProject => {
+              res.status(200).json({
+                message: {
+                  msgBody: "Project successfully deleted",
+                  msgErr: false,
+                },
+                data: { deletedProject },
+              });
+            })
+        }
+      })
+      // If an error was caught, return a 422 'Unprocessable Entity' code
+      .catch(err =>
+        res
+          .status(422)
+          .json({
+            message: {
+              msgBody: "An error occured when deleting your project",
+              msgErr: true,
+            }
+          })
+      );
+  }
 }
