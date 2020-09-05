@@ -64,7 +64,7 @@ module.exports = {
       res.cookie("access_token", token, { httpOnly: true, sameSite: true });
       res.status(200).json({
         isAuthenticated: true,
-        user: { email, firstName, lastName, project, company },
+        user: { _id, email, firstName, lastName, project, company },
       });
     }
   },
