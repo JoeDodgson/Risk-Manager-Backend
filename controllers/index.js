@@ -1,5 +1,5 @@
 // Require in all routes and export in one object
-const { createUser, userLogin, userLogout, authedUser, getUser, updateUser } = require ("./user");
+const { createUser, userLogin, userLogout, authedUser, getUser, updateUser, getAllUser } = require ("./user");
 const { getAllProjects, getProject, createProject, deleteProject } = require ("./project");
 const { createRisk, getRisk, getRisksByProjectId, changeRisk, deleteRisk } = require ("./risk");
 
@@ -17,6 +17,7 @@ module.exports = {
     getProject,
     createProject,
     deleteProject,
+    getAllUser,
     
     // Risk CRUD operations
     createRisk,
