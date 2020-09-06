@@ -1,3 +1,4 @@
+// Require in Mongoose model
 const { Project } = require("../db/index");
 
 module.exports = {
