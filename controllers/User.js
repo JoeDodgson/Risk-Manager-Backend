@@ -125,7 +125,7 @@ module.exports = {
           },
         });
     }
-    // If risk does not exist in DB, return a 401 'Unauthorized' code
+    // If user is not authenticated, return a 401 'Unauthorized' code
     else {
       res
         .status(401)
