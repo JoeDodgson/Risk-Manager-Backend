@@ -7,7 +7,7 @@ module.exports = {
     //  before create a new risk check if it is exist
     Risk.findOne({ title }).then((data) => {
       // if risk exists in DB, can't save to DB
-      if (data !== null)
+      if (data)
         res.status(400).json({
           message: {
             msgBody: "This Risk is already start taking control",
@@ -66,7 +66,6 @@ module.exports = {
   getRisk: (req, res) => {
     Risk.findById(req.params.id)
       .then((risk, err) => {
-        console.log(err);
         // if risk exists in DB, can't save to DB
         if (risk)
           res.status(201).json({
