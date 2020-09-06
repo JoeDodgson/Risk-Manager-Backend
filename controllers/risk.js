@@ -1,5 +1,5 @@
-// Import the Risk 
-const { Risk } = require("../db/index");
+// Require in Mongoose models
+const { Risk, Project } = require("../db/index");
 
 module.exports = {
   // Create a risk
@@ -130,7 +130,7 @@ module.exports = {
       });
   },
 
-  // Get data of a single risk by project id
+  // Get risks by project id
   getRisksByProjectId : (req, res) => {
     // Store the project id from req.params
     const { id } = req.params;
@@ -163,6 +163,79 @@ module.exports = {
               },
             });
         }
+      })
+      // If an error was caught, return a 422 'Unprocessable Entity' code
+      .catch(err =>
+        res
+          .status(422)
+          .json({
+            message: {
+              msgBody: "Error has occured",
+              msgErr: true
+            }
+          })
+      );
+  },
+  
+  // Get risks of projects which the user is a team member of
+  getRisksByUserId : (req, res) => {
+    // Store the user id from req.params
+    const { id } = req.params;
+
+    let usersProjectIds;
+
+    // Search the DB for all projects
+    Project.find({})
+      .then(allProjects => {
+        if (allProjects) {
+          // Filter the projects by the userId
+          const usersProjects = allProjects.filter(project => project.teamMembers.indexOf(id) !== -1);
+          
+          // Map to an array of projectIds
+          usersProjectIds = usersProjects.map(project => project._id.toString());
+        }
+        // If the project was not returned, return a 404 'Not found' code
+        else {
+          res
+            .status(404)
+            .json({
+              message: {
+                msgBody: "Not found",
+                msgErr: true,
+              }
+            });
+        }
+      })
+      .then(() => {
+        Risk.find({})
+          .then(allRisks => {
+            if (allRisks) {
+              // Filter the risks by the user's projectIds
+              const userRisks = allRisks.filter(risk => usersProjectIds.indexOf(risk.projectId.toString()) !== -1);
+
+              // If risk data was returned from the DB, return a 200 'OK' code
+              res
+                .status(200)
+                .json({
+                  message: {
+                    msgBody: "Risks for the specified user have been successfully returned",
+                    msgErr: false,
+                  },
+                  data: { userRisks },
+                });
+            }
+            // If risk data was not returned, return a 404 'Not Found' code
+            else {
+              res
+                .status(404)
+                .json({
+                  message: {
+                    msgBody: "No risks found",
+                    msgErr: true,
+                  },
+                });
+            }
+          })
       })
       // If an error was caught, return a 422 'Unprocessable Entity' code
       .catch(err =>
