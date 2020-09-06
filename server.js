@@ -1,36 +1,40 @@
+// Require in local npm modules
 const express = require('express');
-const app = express();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
-require('dotenv').config();
+const dotenv = require('dotenv')
 
+// Require in local files
+const db = require("./db/index");
+const router = require('./routes/index');
+
+// Configure dotenv
+dotenv.config();
+
+// Define port
 const PORT = process.env.PORT || 8080;
 
-// db connect to different schema
-const db = require("./db/index");
-
+// Define express server and middleware
+const app = express();
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
+// Specify API routes
+app.use('/api', router);
 
+// Connect to MongoDB using mongoose
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/engineerdb", {
     useNewUrlParser: true,
-    //useFindAndModify: false,
     useUnifiedTopology: true
-}, () =>{
+}, () => {
     console.log('successfully connected to database');
 }); 
 mongoose.set('useCreateIndex', true);
 
-// routes setting up
-const router = require('./routes/index');
-app.use('/api', router);
-
-
-
+// Start the express server
 app.listen(PORT, () => {
     console.log(`App running on port ${PORT}!`);
 });

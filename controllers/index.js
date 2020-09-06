@@ -1,27 +1,30 @@
-// File collect all routes and export in one folder
-const {getAllProjects, getProject, createProject, deleteProject} = require ("./project");
-const {createRisk, getRisk, changeRisk} = require ("./risk");
-const {userRegister, userLogin, userLogout, authedUser, getUserData, updateUser} = require ("./user");
+// Require in all routes and export in one object
+const { createUser, userLogin, userLogout, authedUser, getUser, updateUser, getAllUser } = require ("./user");
+const { getAllProjects, getProject, createProject, deleteProject } = require ("./project");
+const { createRisk, getRisk, getRisksByProjectId, changeRisk, deleteRisk } = require ("./risk");
 
 module.exports = {
-    // user functionalities
-    userRegister,
+    // User CRUD operations
+    createUser,
     userLogin,
     userLogout,
     authedUser ,
-    getUserData,
+    getUser,
     updateUser,
 
-    // project related functionalities
+    // Project CRUD operations
     getAllProjects,
     getProject,
     createProject,
     deleteProject,
+    getAllUser,
     
-    // Risk related functionalities
+    // Risk CRUD operations
     createRisk,
     getRisk,
-    changeRisk
+    getRisksByProjectId,
+    changeRisk,
+    deleteRisk,
 
 };
 

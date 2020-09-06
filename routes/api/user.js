@@ -1,29 +1,27 @@
+// Require in local files and npm modules
 const express = require("express");
-const userRouter = express.Router();
 const passport = require("passport");
-const passportConfig = require("../../middleware/passport");
+const userRouter = express.Router();
 const userController = require("../../controllers/index")
+const passportConfig = require("../../middleware/passport");
 
-//server will not maintaining the session
+// Define passportLocal and passportJWT middleware
 const passportLocal = passport.authenticate("local", { session: false });
 const passportJWT = passport.authenticate("jwt", { session: false });
 
-// Creating register route
-userRouter.post("/register", userController.userRegister);
-
-// use passport local middleware
+// Define user login and authentication operations using userController
+userRouter.post("/register", userController.createUser);
+// Use passportLocal middleware for login
 userRouter.post("/login", passportLocal, userController.userLogin);
-
-//Creating the logout route
+// Use passportJWT middleware for logout and authenticated routes
 userRouter.get("/logout", passportJWT, userController.userLogout);
-
-// this isAuthenticated function use to persist authentican
-// once user login state in the react app will know user has been authenticated, but when user close the app, the state will be gone.
-// using this endpoint, when user visit the website next time user will still stay login
 userRouter.get('/authenticated', passportJWT, userController.authedUser);
-// get user info route
-userRouter.get("/info/:id", passportJWT, userController.getUserData);
-// update info route
+
+// Define routes for user CRUD operations, using the riskController
+userRouter.get("/info/:id", passportJWT, userController.getUser);
 userRouter.put("/update/:id", passportJWT, userController.updateUser);
+
+// Define routes for get all user (Create Project Member Use!!!)
+userRouter.get("/", userController.getAllUser);
 
 module.exports = userRouter;
