@@ -16,7 +16,7 @@ module.exports = {
               msgErr: false,
             },
             data: { projectsData },
-        })
+          })
       )
       // If an error was caught, return a 422 'Unprocessable Entity' code
       .catch(err =>
@@ -39,25 +39,25 @@ module.exports = {
         // If the project was successfully returned, return a 200 'OK' code
         if (project) {
           res
-          .status(200)
-          .json({
-            message: {
-              msgBody: "Project data successfully returned",
-              msgErr: false,
-            },
-            data: { project },
-          });
+            .status(200)
+            .json({
+              message: {
+                msgBody: "Project data successfully returned",
+                msgErr: false,
+              },
+              data: { project },
+            });
         }
         // If the project was not returned, return a 404 'Not found' code
         else {
           res
-          .status(404)
-          .json({
-            message: {
-              msgBody: "Project not found",
-              msgErr: true,
-            }
-          });
+            .status(404)
+            .json({
+              message: {
+                msgBody: "Project not found",
+                msgErr: true,
+              }
+            });
         }
       })
       // If an error was caught, return a 422 'Unprocessable Entity' code
@@ -83,12 +83,14 @@ module.exports = {
       .then(data => {
         // If a project already exists with this title, return a 406 'Not Acceptable' code
         if (data) {
-          res.status(406).json({
-            message: {
-              msgBody: "A project with this title already exists",
-              msgErr: true,
-            },
-          });
+          res
+            .status(406)
+            .json({
+              message: {
+                msgBody: "A project with this title already exists",
+                msgErr: true,
+              },
+            });
         }
         // Else save the new project to the collection using Mongoose
         else {
@@ -160,24 +162,28 @@ module.exports = {
       .then(data => {
         // If no project exists with this id, return a 406 'Not Acceptable' code
         if (!data) {
-          res.status(406).json({
-            message: {
-              msgBody: "A project with this title already exists",
-              msgErr: true,
-            },
-          });
+          res
+            .status(406)
+            .json({
+              message: {
+                msgBody: "A project with this title already exists",
+                msgErr: true,
+              },
+            });
         }
         // If the project exists, delete it, return the deleted project with a 200 'OK' code
         else {
           data.remove()
             .then(deletedProject => {
-              res.status(200).json({
-                message: {
-                  msgBody: "Project successfully deleted",
-                  msgErr: false,
-                },
-                data: { deletedProject },
-              });
+              res
+                .status(200)
+                .json({
+                  message: {
+                    msgBody: "Project successfully deleted",
+                    msgErr: false,
+                  },
+                  data: { deletedProject },
+                });
             })
         }
       })
