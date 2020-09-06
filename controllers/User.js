@@ -201,6 +201,36 @@ module.exports = {
       );
   },
 
+  // Get data for a single user
+  getAllUser : (req, res) => {
+    // Find the user in the DB using the id from req.params
+    User.find({})
+      .sort({ date: -1 })
+      .then(UserData =>
+        // If project data was returned from the DB, return a 200 'OK' code
+        res
+          .status(200)
+          .json({
+            message: {
+              msgBody: "All User data successfully returned",
+              msgErr: false,
+            },
+            data: { UserData },
+        })
+      )
+      // If an error was caught, return a 422 'Unprocessable Entity' code
+      .catch(err =>
+        res
+          .status(422)
+          .json({
+            message: {
+              msgBody: "Error has occured",
+              msgErr: true
+            }
+          })
+      );
+  },
+
   // Change user data
   updateUser : (req, res) => {
     // Store the id from req.params
