@@ -21,4 +21,7 @@ userRouter.get('/authenticated', passportJWT, userController.authedUser);
 userRouter.get("/info/:id", passportJWT, userController.getUser);
 userRouter.put("/update/:id", passportJWT, userController.updateUser);
 
+// Define routes for get all user (Create Project Member Use!!!)
+userRouter.get("/", userController.getAllUser);
+
 module.exports = userRouter;
