@@ -73,6 +73,54 @@ module.exports = {
       });
   },
 
+  // Get the data of a single project  
+  getProjectByUserId : (req, res) => {
+    // Store the user id from req.params
+    const { id } = req.params;
+
+    // Search the DB for all projects
+    Project.find({})
+      .then(allProjects => {
+        if (allProjects) {
+          // Filter the projects by the userId
+          const usersProjects = allProjects.filter(project => project.teamMembers.indexOf(id) !== -1);
+          
+          // Return the user's projects data with a 200 'OK' code
+          res
+            .status(200)
+            .json({
+              message: {
+                msgBody: "Project data successfully returned",
+                msgErr: false,
+              },
+              data: { usersProjects },
+            });
+        }
+        // If the project was not returned, return a 404 'Not found' code
+        else {
+          res
+            .status(404)
+            .json({
+              message: {
+                msgBody: "Project not found",
+                msgErr: true,
+              }
+            });
+        }
+      })
+      // If an error was caught, return a 422 'Unprocessable Entity' code
+      .catch(err => {
+        res
+          .status(422)
+          .json({
+            message: {
+              msgBody: "An error occured",
+              msgErr: true,
+            }
+          });
+      });
+  },
+
   // Create a new project
   createProject : (req, res) => {
     // Store the title from the request body
