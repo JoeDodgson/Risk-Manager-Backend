@@ -15,6 +15,7 @@ projectRouter.get("/", passportJWT,  riskController.getAllProjects);
 projectRouter.get("/:id", passportJWT,  riskController.getProject);
 projectRouter.post("/", passportJWT,  riskController.createProject);
 projectRouter.delete("/:id", passportJWT, riskController.deleteProject);
+projectRouter.get("/user/:id", passportJWT, riskController.getProjectByUserId);
 
 // Define routes for risk CRUD operations, using the riskController
 projectRouter.post("/risk", passportJWT, riskController.createRisk);
