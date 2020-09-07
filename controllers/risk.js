@@ -6,7 +6,6 @@ module.exports = {
   createRisk : (req, res) => {
     // Store the requested new risk title from the request
     const { title } = req.body;
-
     // Before creating new risk, check if it exists
     Risk.findOne({ title })
       .then(data => {
@@ -93,6 +92,7 @@ module.exports = {
   getRisk : (req, res) => {
     Risk.findById(req.params.id)
       .then((risk, err) => {
+
         // If risk exists in DB return to the user with 200 'OK' code
         if (risk) {
           res

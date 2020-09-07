@@ -155,18 +155,18 @@ module.exports = {
         }
       });
   },
-
+  
   // Route to prevent the user from losing authentication from state when they close the browser
   authedUser : (req, res) => {
     // Store the email from the request
-    const { email } = req.user;
+    const { email, _id, firstName, lastName, company, project } = req.user;
 
     // Return a 200 'OK' code, return user object and isAuthenticated in the response
     res
       .status(200)
       .json({ 
         isAuthenticated: true,
-        user: { email },
+        user: {  email, _id, firstName, lastName, company, project },
         message: {
           msgBody: "User is authenticated",
           msgErr: false,
