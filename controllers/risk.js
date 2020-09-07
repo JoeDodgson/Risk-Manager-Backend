@@ -180,62 +180,81 @@ module.exports = {
   // Get risks of projects which the user is a team member of
   getRisksByUserId : (req, res) => {
     // Store the user id from req.params
-    const { id } = req.params;
+    let { id } = req.params;
+
+    // Trim the last character off the end of id
+    id = id.slice(0, id.length - 1);
 
     let usersProjectIds;
+    let usersProjects = [];
 
     // Search the DB for all projects
     Project.find({})
       .then(allProjects => {
         if (allProjects) {
           // Filter the projects by the userId
-          const usersProjects = allProjects.filter(project => project.teamMembers.indexOf(id) !== -1);
-          
+          for (let i = 0; i < allProjects.length; i++) {
+            for (let j = 0; j < allProjects[i].teamMembers.length; j++) {
+              if (allProjects[i].teamMembers[j][0]._id === id) {
+                usersProjects.push(allProjects[i]);
+              }
+            }
+          }
+
           // Map to an array of projectIds
-          usersProjectIds = usersProjects.map(project => project._id.toString());
+          usersProjectIds = usersProjects.map(project => project._id);
         }
         // If the project was not returned, return a 404 'Not found' code
         else {
           res
-            .status(404)
-            .json({
-              message: {
-                msgBody: "Not found",
-                msgErr: true,
-              }
-            });
+          .status(404)
+          .json({
+            message: {
+              msgBody: "Not found",
+              msgErr: true,
+            }
+          });
         }
       })
       .then(() => {
         Risk.find({})
-          .then(allRisks => {
-            if (allRisks) {
-              // Filter the risks by the user's projectIds
-              const userRisks = allRisks.filter(risk => usersProjectIds.indexOf(risk.projectId.toString()) !== -1);
-
-              // If risk data was returned from the DB, return a 200 'OK' code
-              res
-                .status(200)
-                .json({
-                  message: {
-                    msgBody: "Risks for the specified user have been successfully returned",
-                    msgErr: false,
-                  },
-                  data: { userRisks },
-                });
+        .then(allRisks => {
+          if (allRisks) {
+            // Filter the risks by the user's projectIds
+            let userRisks = [];
+            for (let i = 0; i < allRisks.length; i++) {
+              for (let j = 0; j < usersProjectIds.length; j++) {
+                console.log(JSON.stringify(allRisks[i].projectId).replace(/"/g, ""));
+                console.log(JSON.stringify(usersProjectIds[j]).replace(/"/g, ""));
+                if (JSON.stringify(allRisks[i].projectId).replace(/"/g, "") === JSON.stringify(usersProjectIds[j]).replace(/"/g, "")) {
+                  userRisks.push(allRisks[i]);
+                }
+              }
             }
-            // If risk data was not returned, return a 404 'Not Found' code
-            else {
-              res
-                .status(404)
-                .json({
-                  message: {
-                    msgBody: "No risks found",
-                    msgErr: true,
-                  },
-                });
-            }
-          })
+            
+            // If risk data was returned from the DB, return a 200 'OK' code
+            res
+              .status(200)
+              .json({
+                message: {
+                  msgBody: "Risks for the specified user have been successfully returned",
+                  msgErr: false,
+                },
+                data: { userRisks },
+              });
+          }
+          // If risk data was not returned, return a 404 'Not Found' code
+          else {
+            res
+              .status(404)
+              .json({
+                message: {
+                  msgBody: "No risks found",
+                  msgErr: true,
+                },
+              });
+          }
+        })
       })
       // If an error was caught, return a 422 'Unprocessable Entity' code
       .catch(err =>
