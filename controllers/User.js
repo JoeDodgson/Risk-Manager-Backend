@@ -53,17 +53,22 @@ module.exports = {
             res
               .status(500)
               .json({
-                message: { msgBody: "An error occured when creating your user", msgErr: true },
+                message: {
+                  msgBody: "An error occured when creating your user",
+                  msgErr: true
+                },
               });
           }
           // If no error occurred, new user was created so return 201 'Created' code
           else {
-            res.status(201).json({
-              message: {
-                msgBody: "Account successfully created",
-                msgErr: false,
-              },
-            });
+            res
+              .status(201)
+              .json({
+                message: {
+                  msgBody: "Account successfully created",
+                  msgErr: false,
+                },
+              });
           }
         });
       }
@@ -114,6 +119,10 @@ module.exports = {
             project,
             company,
           },
+          message: {
+            msgBody: "You have successfully logged in",
+            msgErr: false,
+          },
         });
     }
     // If risk does not exist in DB, return a 401 'Unauthorized' code
@@ -134,11 +143,17 @@ module.exports = {
     // Clear the 'access_token' cookie which was previously set on login
     res.clearCookie("access_token");
 
-    // Return an empty user object in the response
-    res.json({ 
-      user: { email: "" },
-      success: true,
-    });
+    // Return a 200 'OK' code and an empty user object in the response
+    res
+      .status(200)
+      .json({ 
+        user: { email: "" },
+        success: true,
+        message: {
+          msgBody: "You have successfully logged out",
+          msgErr: false,
+        }
+      });
   },
 
   // Route to prevent the user from losing authentication from state when they close the browser
@@ -151,7 +166,11 @@ module.exports = {
       .status(200)
       .json({ 
         isAuthenticated: true,
-        user: { email } 
+        user: { email },
+        message: {
+          msgBody: "User is authenticated",
+          msgErr: false,
+        },
       });
   },
 
@@ -162,19 +181,21 @@ module.exports = {
       .then((user, err) => {       
         // If the user exists, return user object with a 200 'OK' code 
         if (user) {
-          res.status(200).json({
-            message: {
-              msgBody: "User successfully returned",
-              msgErr: false,
-            },
-            data: { 
-                email: user[0].email,
-                firstName : user[0].firstName,
-                lastName : user[0].lastName,
-                project : user[0].project,
-                company : user[0].company,
-            },
-          });
+          res
+            .status(200)
+            .json({
+              message: {
+                msgBody: "User successfully returned",
+                msgErr: false,
+              },
+              data: { 
+                  email: user[0].email,
+                  firstName : user[0].firstName,
+                  lastName : user[0].lastName,
+                  project : user[0].project,
+                  company : user[0].company,
+              },
+            });
         }
         // If user does not exist in DB, return a 404 'Not Found' code
         else {
@@ -261,22 +282,26 @@ module.exports = {
       .then(databaseChange => {
         // If the user was updated, return the database changes with a 200 'OK' code
         if (databaseChange) {
-          res.status(200).json({
-            message: {
-              msgBody: "User information was successfully updated",
-              msgErr: false,
-            },
-            data: { databaseChange },
-          });
+          res
+            .status(200)
+            .json({
+              message: {
+                msgBody: "User information was successfully updated",
+                msgErr: false,
+              },
+              data: { databaseChange },
+            });
         }
         // If the user was not updated, return a 404 'Not Found' code
         else {
-          res.status(404).json({
-            message: {
-              msgBody: "User not found so the information could not be updated",
-              msgErr: true,
-            },
-          });
+          res
+            .status(404)
+            .json({
+              message: {
+                msgBody: "User not found so the information could not be updated",
+                msgErr: true,
+              },
+            });
         }
       })
       // If an error was caught, return a 422 'Unprocessable Entity' code

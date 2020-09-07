@@ -96,14 +96,14 @@ module.exports = {
         // If risk exists in DB return to the user with 200 'OK' code
         if (risk) {
           res
-          .status(200)
-          .json({
-            message: {
-              msgBody: "Risk successfully returned",
-              msgErr: false,
-            },
-            data: { risk },
-          });
+            .status(200)
+            .json({
+              message: {
+                msgBody: "Risk successfully returned",
+                msgErr: false,
+              },
+              data: { risk },
+            });
         }
         // If risk does not exist in DB, return a 404 'Not Found' code
         else {
@@ -155,13 +155,13 @@ module.exports = {
         // If risk data was not returned, return a 404 'Not Found' code
         else {
           res
-          .status(404)
-          .json({
-            message: {
-              msgBody: "No risks found",
-              msgErr: true,
-            },
-          });
+            .status(404)
+            .json({
+              message: {
+                msgBody: "No risks found",
+                msgErr: true,
+              },
+            });
         }
       })
       // If an error was caught, return a 422 'Unprocessable Entity' code
@@ -216,25 +216,25 @@ module.exports = {
       .then(updatedRisk => {
         // If risk was successfully updated in DB, return to the user with 200 'OK' code
         res
-        .status(200)
-        .json({
-          message: {
-            msgBody: "Risk successfully updated",
-            msgErr: false,
-          },
-          data: { updatedRisk },
-        });
+          .status(200)
+          .json({
+            message: {
+              msgBody: "Risk successfully updated",
+              msgErr: false,
+            },
+            data: { updatedRisk },
+          });
       })
       // If an error was caught, return a 422 'Unprocessable Entity' code
       .catch(err =>
         res
-        .status(422)
-        .json({
-          message: {
-            msgBody: "An error occured",
-            msgErr: true,
-          } 
-        })
+          .status(422)
+          .json({
+            message: {
+              msgBody: "An error occured",
+              msgErr: true,
+            }
+          })
       );
   },
       
@@ -246,24 +246,28 @@ module.exports = {
       .then(data => {
         // If no risk exists with this id, return a 406 'Not Acceptable' code
         if (!data) {
-          res.status(406).json({
-            message: {
-              msgBody: "A Risk with this title already exists",
-              msgErr: true,
-            },
-          });
+          res
+            .status(406)
+            .json({
+              message: {
+                msgBody: "A Risk with this title already exists",
+                msgErr: true,
+              },
+            });
         }
         // If the risk exists, delete it, return the deleted risk with a 200 'OK' code
         else {
           data.remove()
             .then(deletedRisk => {
-              res.status(200).json({
-                message: {
-                  msgBody: "Risk successfully deleted",
-                  msgErr: false,
-                },
-                data: { deletedRisk },
-              });
+              res
+                .status(200)
+                .json({
+                  message: {
+                    msgBody: "Risk successfully deleted",
+                    msgErr: false,
+                  },
+                  data: { deletedRisk },
+                });
             })
         }
       })
