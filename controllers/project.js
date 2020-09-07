@@ -1,3 +1,4 @@
+// Require in Mongoose model
 const { Project } = require("../db/index");
 
 module.exports = {
@@ -71,6 +72,63 @@ module.exports = {
             }
           });
       });
+  },
+
+  // Get the data of a single project  
+  getProjectByUserId : (req, res) => {
+    // Store the user id from req.params
+    let { id } = req.params;
+
+    // Trim the last character off the end of id
+    id = id.slice(0, id.length - 1);
+    
+    // Search the DB for all projects
+    Project.find({})
+    .then(allProjects => {
+      let usersProjects = [];
+      if (allProjects) {
+        // Filter the projects by the userId
+        for (let i = 0; i < allProjects.length; i++) {
+          for (let j = 0; j < allProjects[i].teamMembers.length; j++) {
+            if (allProjects[i].teamMembers[j][0]._id === id) {
+              usersProjects.push(allProjects[i]);
+            }
+          }
+        }
+        // Return the user's projects data with a 200 'OK' code
+        res
+          .status(200)
+          .json({
+            message: {
+              msgBody: "Project data successfully returned",
+              msgErr: false,
+            },
+            data: { usersProjects },
+          });
+      }
+      // If the project was not returned, return a 404 'Not found' code
+      else {
+        res
+          .status(404)
+          .json({
+            message: {
+              msgBody: "Project not found",
+              msgErr: true,
+            }
+          });
+      }
+    })
+    // If an error was caught, return a 422 'Unprocessable Entity' code
+    .catch(err => {
+      res
+        .status(422)
+        .json({
+          message: {
+            msgBody: "An error occured",
+            msgErr: true,
+          }
+        });
+    });
   },
 
   // Create a new project
