@@ -31,10 +31,10 @@ const ProjectSchema = new Schema({
         type: String,
         required: true 
     },
-    teamMembers: {
-        type: Array,
+    teamMembers: [{
+        type: Object,
         required: true 
-    }
+    }]
 });
 
 const Project = mongoose.model("Project", ProjectSchema);
