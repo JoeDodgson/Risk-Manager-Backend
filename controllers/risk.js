@@ -139,7 +139,7 @@ module.exports = {
       .then(allRisks => {
         if (allRisks) {
           // Filter the risks by the projectId
-          const projectRisks = allRisks.filter(risk => risk.projectId === id);
+          const projectRisks = allRisks.filter(risk => JSON.stringify(risk.projectId).replace(/"/g, "") === id);
           
           // If risk data was returned from the DB, return a 200 'OK' code
           res
