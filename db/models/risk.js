@@ -33,15 +33,23 @@ const RisksSchema = new Schema({
     },
     location: {
         lat: {
-           type: Number
+            type: Number
         },
         lng: {
-           type: Number
+            type: Number
         }
     },
-    comments: {
-        type: Array
-    },
+    comments: [{
+        user: {
+            name: { type: String },
+            userId: { type: String }
+        },
+        content: { type: String },
+        dateRaised: { 
+            type: Date,
+            default: Date.now()
+        },
+    }],
     likelihood: {
         type: Number,
         min: 1,
