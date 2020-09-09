@@ -139,7 +139,7 @@ module.exports = {
       .then(allRisks => {
         if (allRisks) {
           // Filter the risks by the projectId
-          const projectRisks = allRisks.filter(risk => risk.projectId === id);
+          const projectRisks = allRisks.filter(risk => JSON.stringify(risk.projectId).replace(/"/g, "") === id);
           
           // If risk data was returned from the DB, return a 200 'OK' code
           res
@@ -224,8 +224,6 @@ module.exports = {
             let userRisks = [];
             for (let i = 0; i < allRisks.length; i++) {
               for (let j = 0; j < usersProjectIds.length; j++) {
-                console.log(JSON.stringify(allRisks[i].projectId).replace(/"/g, ""));
-                console.log(JSON.stringify(usersProjectIds[j]).replace(/"/g, ""));
                 if (JSON.stringify(allRisks[i].projectId).replace(/"/g, "") === JSON.stringify(usersProjectIds[j]).replace(/"/g, "")) {
                   userRisks.push(allRisks[i]);
                 }
