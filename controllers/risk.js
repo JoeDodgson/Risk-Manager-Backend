@@ -373,5 +373,81 @@ module.exports = {
           })
       );
   },
+
+  // Create a comment. 
+  // Finds the risk, then updates the comment property by pushing the new comment into the existing comment array
+  createComment : (req, res) => {
+    // Store the data from the request body
+    const {
+      user,
+      content,
+      dateRaised,
+    } = req.body;
+
+    const newComment = {
+      user,
+      content,
+      dateRaised,
+    }
+  
+    // Store the risk DB id from the request params. Remove new line character
+    let _id = req.params.id;
+    _id = _id.replace(/\n/g, "");
+
+    // Get the risk from the DB
+    Risk.findById(_id)
+    .then((risk, err) => {
+      
+      if (risk) {
+        // Push the new comment into the existing comment array
+        let updatedComments = risk.comments;
+        updatedComments.push(newComment);
+
+        // Update the risk in the database using _id and the requested data
+        Risk.findOneAndUpdate(
+          { _id },
+          {
+            $set: {
+              comments: updatedComments,
+            },
+          })
+          .then(data => {
+            // If risk was successfully updated in DB, return to the user with 200 'OK' code
+            res
+              .status(200)
+              .json({
+                message: {
+                  msgBody: "Comment successfully added",
+                  msgErr: false,
+                },
+                data: { updatedComments },
+              });
+          })
+      }
+      else {
+        // If the risk was not returned, return a 404 'Not found' code
+        res
+        .status(404)
+        .json({
+          message: {
+            msgBody: "Risk not found in database. Comment could not be added",
+            msgErr: true,
+          }
+        });
+      }
+    })
+
+    // If an error was caught, return a 422 'Unprocessable Entity' code
+    .catch(err =>
+      res
+        .status(422)
+        .json({
+          message: {
+            msgBody: "An error occured",
+            msgErr: true,
+          }
+        })
+    );
+  },
 };
     

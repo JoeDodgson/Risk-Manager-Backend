@@ -22,6 +22,7 @@ projectRouter.post("/risk", passportJWT, riskController.createRisk);
 projectRouter.get("/risk/:id", passportJWT, riskController.getRisk);
 projectRouter.put("/risk/:id", passportJWT, riskController.changeRisk);
 projectRouter.delete("/risk/:id", passportJWT, riskController.deleteRisk);
+projectRouter.put("/risk/:id/comment", passportJWT, riskController.createComment);
 projectRouter.get("/risk/user/:id", passportJWT, riskController.getRisksByUserId);
 projectRouter.get("/risk/project/:id", passportJWT, riskController.getRisksByProjectId);
 
