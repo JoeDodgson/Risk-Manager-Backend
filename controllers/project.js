@@ -1,5 +1,6 @@
 // Require in Mongoose model
 const { Project } = require("../db/index");
+const { json } = require("express");
 
 module.exports = {
 
@@ -79,9 +80,8 @@ module.exports = {
     // Store the user id from req.params
     let { id } = req.params;
 
-    // Trim the last character off the end of id
-    id = id.slice(0, id.length - 1);
-    
+    // remove new line charactor from user id
+    id = id.replace(/\n/g, "");    
     // Search the DB for all projects
     Project.find({})
     .then(allProjects => {
