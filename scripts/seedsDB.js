@@ -10,37 +10,76 @@ const projectSeed = [
     title: "London Eye",
     description: "Annual maintenance",
     location: {
-      lat: 50.353626,
-      lng: 1.6235,
+      lat: 51.5033237,
+      lng: -0.1282763
     },
     startDate: "2021/06/02",
     endDate: "2023/04/19",
     client: "British Government",
-    teamMembers: ["Joe", "ian", "dan"],
+    teamMembers: [
+      {
+        name: "Ian Cheng",
+        _id: "5f5a22646157b937082c422a"
+      },
+      {
+        name: "Joe Dodgson",
+        _id: "5f5a22646157b937082c422b"
+      },
+      {
+        name: "Meedaxa Ahmed",
+        _id: "5f5a22646157b937082c422c"
+      }
+    ]
   },
   {
     title: "London Bridge",
     description: "Road repair",
     location: {
-      lat: 48.6345,
-      lng: -1.927523,
+      lat: 51.5078788,
+      lng: -0.0964868
     },
     startDate: "2021/02/05",
     endDate: "2020/12/18",
     client: "British Government",
-    teamMembers: ["Ben", "Mary", "Sarah"],
+    teamMembers: [
+      {
+        name: "Joe Dodgson",
+        _id: "5f5a22646157b937082c422b"
+      },
+      {
+        name: "Niro Witharana",
+        _id: "5f5a22646157b937082c422d"
+      },
+      {
+        name: "Meedaxa Ahmed",
+        _id: "5f5a22646157b937082c422c"
+      }
+    ]
   },
   {
     title: "Big Ben",
     description: "Renew",
     location: {
-      lat: 47.4266,
-      lng: -1.463867,
+      lat: 51.5007289,
+      lng: -0.1333587
     },
     startDate: "2020/12/12",
     endDate: "2021/02/09",
     client: "British Government",
-    teamMembers: ["Kenny", "Queenie", "David"],
+    teamMembers: [
+      {
+        name: "Joe Dodgson",
+        _id: "5f5a22646157b937082c422b"
+      },
+      {
+        name: "Meedaxa Ahmed",
+        _id: "5f5a22646157b937082c422c"
+      },
+      {
+        name: "Ian Cheng",
+        _id: "5f5a22646157b937082c422a"
+      }
+    ]
   },
 ];
 
@@ -64,9 +103,19 @@ db.Project.remove({})
         designDiscipline: "designDiscipline1",
         status: 2,
         location: {
-            lat: 50.353626,
-            lng: 1.6235,
-          },
+          lat: 51.5033237,
+          lng: -0.1282763
+        },
+        comments: [
+          {
+            user: {
+              name: "Ian Cheng",
+              userId: "5f5a22646157b937082c422a"
+            },
+            content: "Floor slippy aware",
+            dateRaised: Date.now()
+          }
+        ],
         likelihood:4,
         severity:4,
         risk:8,
@@ -79,9 +128,19 @@ db.Project.remove({})
         designDiscipline: "designDiscipline2",
         status: 2,
         location: {
-            lat: 48.6345,
-            lng: -1.927523,
-          },
+          lat: 51.5078788,
+          lng: -0.0964868
+        },
+        comments: [
+          {
+            user: {
+              name: "Joe Dodgson",
+              userId: "5f5a22646157b937082c422b"
+            },
+            content: "More Notice Sign Should Be Placed Around The Site",
+            dateRaised: Date.now()
+          }
+        ],
         likelihood:3,
         severity:4,
         risk:7,
@@ -94,9 +153,19 @@ db.Project.remove({})
         designDiscipline: "designDiscipline3",
         status: 2,
         location: {
-            lat: 47.4266,
-            lng: -1.463867,
-          },
+          lat: 51.5007289,
+          lng: -0.1333587
+        },
+        comments: [
+          {
+            user: {
+              name: "Meedaxa Ahmed",
+              userId: "5f5a22646157b937082c422c"
+            },
+            content: "Scarfold Aware",
+            dateRaised: Date.now()
+          }
+        ],
         likelihood:3,
         severity:4,
         risk:7,
