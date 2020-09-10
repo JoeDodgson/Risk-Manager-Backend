@@ -7,40 +7,40 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/engineerdb");
 // This file empties the projects collection and inserts the books below
 const projectSeed = [
   {
-    title: "title1",
-    description: "discription1",
+    title: "London Eye",
+    description: "Annual maintenance",
     location: {
-      lat: 52.505333,
-      lng: -1.923352,
+      lat: 50.353626,
+      lng: 1.6235,
     },
     startDate: "2021/06/02",
     endDate: "2023/04/19",
-    client: "client1",
-    teamMembers: ["member1", "member3", "member5"],
+    client: "British Government",
+    teamMembers: ["Joe", "ian", "dan"],
   },
   {
-    title: "title2",
-    description: "discription2",
+    title: "London Bridge",
+    description: "Road repair",
     location: {
-      lat: 52.506752,
+      lat: 48.6345,
       lng: -1.927523,
     },
     startDate: "2021/02/05",
     endDate: "2020/12/18",
-    client: "client2",
-    teamMembers: ["member1", "member2", "member4"],
+    client: "British Government",
+    teamMembers: ["Ben", "Mary", "Sarah"],
   },
   {
-    title: "title3",
-    description: "discription3",
+    title: "Big Ben",
+    description: "Renew",
     location: {
-      lat: 52.509752,
-      lng: -1.923867,
+      lat: 47.4266,
+      lng: -1.463867,
     },
     startDate: "2020/12/12",
     endDate: "2021/02/09",
-    client: "client1",
-    teamMembers: ["member1", "member3", "member5"],
+    client: "British Government",
+    teamMembers: ["Kenny", "Queenie", "David"],
   },
 ];
 
@@ -58,49 +58,49 @@ db.Project.remove({})
   // This file empties the risks collection and inserts the books below
   const riskSeed = [   
     {
-        title: "title1",
+        title: "London Eye",
         riskId: "riskId1",
-        description:"discription1",
+        description: "Annual maintenance",
         designDiscipline: "designDiscipline1",
         status: 2,
         location: {
-            lat: 52.505641,
-            lng: -1.923124,
+            lat: 50.353626,
+            lng: 1.6235,
           },
         likelihood:4,
         severity:4,
         risk:8,
-        projectId:"5f4eec89cc853f32ec03243e"         
+        projectId: "5f59f053a94acd5aa0e4ebeb"         
     },
     {
-        title: "title2",
+        title: "London Bridge",
         riskId: "riskId2",
-        description:"discription2",
+        description: "Road repair",
         designDiscipline: "designDiscipline2",
         status: 2,
         location: {
-            lat: 52.558125,
-            lng: -1.821516,
+            lat: 48.6345,
+            lng: -1.927523,
           },
         likelihood:3,
         severity:4,
         risk:7,
-        projectId:"5f4eec89cc853f32ec03243e"         
+        projectId:"5f59f053a94acd5aa0e4ebec"         
     },
     {
-        title: "title3",
+        title: "Big Ben",
         riskId: "riskId3",
-        description:"discription3",
+        description: "Renew",
         designDiscipline: "designDiscipline3",
         status: 2,
         location: {
-            lat: 52.652311,
-            lng: -1.126321,
+            lat: 47.4266,
+            lng: -1.463867,
           },
         likelihood:3,
         severity:4,
         risk:7,
-        projectId:"5f4eec89cc853f32ec03243e"
+        projectId:"5f59f053a94acd5aa0e4ebed"
     },
   
 ];
