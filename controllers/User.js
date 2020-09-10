@@ -113,6 +113,7 @@ module.exports = {
         .json({
           isAuthenticated: true,
           user: { 
+            _id,
             email,
             firstName,
             lastName,
