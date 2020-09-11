@@ -182,8 +182,8 @@ module.exports = {
     // Store the user id from req.params
     let { id } = req.params;
 
-    // Trim the last character off the end of id
-    id = id.slice(0, id.length - 1);
+    // remove new line charactor from user id
+    id = id.replace(/\n/g, "");
 
     let usersProjectIds;
     let usersProjects = [];
