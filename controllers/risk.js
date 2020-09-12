@@ -134,7 +134,6 @@ module.exports = {
   getRisksByProjectId : (req, res) => {
     // Store the project id from req.params
     const id = req.params.id;
-console.log(id);
 
     Risk.find({})
       .then(allRisks => {
@@ -203,7 +202,6 @@ console.log(id);
               }
             }
           }
-// console.log(usersProjects);
           // Map to an array of projectIds
           usersProjectIds = usersProjects.map(project => project._id);
         }
