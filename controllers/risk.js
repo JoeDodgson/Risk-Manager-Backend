@@ -133,7 +133,7 @@ module.exports = {
   // Get risks by project id
   getRisksByProjectId : (req, res) => {
     // Store the project id from req.params
-    const { id } = req.params;
+    const id = req.params.id;
 
     Risk.find({})
       .then(allRisks => {
@@ -180,10 +180,11 @@ module.exports = {
   // Get risks of projects which the user is a team member of
   getRisksByUserId : (req, res) => {
     // Store the user id from req.params
-    let { id } = req.params;
-
+    let id = req.params.id;
+    // console.log(id);
+    id = id.replace(/\n/g, "")
     // Trim the last character off the end of id
-    id = id.slice(0, id.length - 1);
+    // id = id.slice(0, id.length - 1);
 
     let usersProjectIds;
     let usersProjects = [];
@@ -192,6 +193,7 @@ module.exports = {
     Project.find({})
       .then(allProjects => {
         if (allProjects) {
+          // console.log(allProjects);
           // Filter the projects by the userId
           for (let i = 0; i < allProjects.length; i++) {
             for (let j = 0; j < allProjects[i].teamMembers.length; j++) {
@@ -200,7 +202,6 @@ module.exports = {
               }
             }
           }
-
           // Map to an array of projectIds
           usersProjectIds = usersProjects.map(project => project._id);
         }
