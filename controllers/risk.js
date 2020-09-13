@@ -177,12 +177,10 @@ module.exports = {
       );
   },
   
-  // Get risks of projects which the user is a team member of
-  getRisksByUserId : (req, res) => {
+   // Get risks of projects which the user is a team member of
+   getRisksByUserId : (req, res) => {
     // Store the user id from req.params
-    let { id } = req.params;
-
-    // remove new line charactor from user id
+    let id = req.params.id;
     id = id.replace(/\n/g, "");
 
     let usersProjectIds;
@@ -192,6 +190,7 @@ module.exports = {
     Project.find({})
       .then(allProjects => {
         if (allProjects) {
+          // console.log(allProjects);
           // Filter the projects by the userId
           for (let i = 0; i < allProjects.length; i++) {
             for (let j = 0; j < allProjects[i].teamMembers.length; j++) {
@@ -200,7 +199,6 @@ module.exports = {
               }
             }
           }
-
           // Map to an array of projectIds
           usersProjectIds = usersProjects.map(project => project._id);
         }
@@ -266,6 +264,7 @@ module.exports = {
           })
       );
   },
+  
   
   // Change risk data
   changeRisk : (req, res) => {
