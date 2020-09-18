@@ -91,7 +91,7 @@ module.exports = {
     console.log(`Request: ${req}`);
     console.log(`req.isAuthenticated: ${req.isAuthenticated()}`);
     // If the request is authenticated, create a token and return in the response
-    if (req.isAuthenticated()) {
+    // if (req.isAuthenticated()) {
       // Store the user data from the request
       const {
         _id,
@@ -127,18 +127,18 @@ module.exports = {
             msgErr: false,
           },
         });
-    }
-    // If user is not authenticated, return a 401 'Unauthorized' code
-    else {
-      res
-        .status(401)
-        .json({
-          message: {
-            msgBody: "Invalid login credentials",
-            msgErr: true,
-          }
-        });
-    }
+    // }
+    // // If user is not authenticated, return a 401 'Unauthorized' code
+    // else {
+    //   res
+    //     .status(401)
+    //     .json({
+    //       message: {
+    //         msgBody: "Invalid login credentials",
+    //         msgErr: true,
+    //       }
+    //     });
+    // }
   },
 
   // Logs the user out
