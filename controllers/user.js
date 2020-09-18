@@ -105,7 +105,7 @@ module.exports = {
 
       // Set the cookie in the response
       // Set httpOnly and sameSite as true to prevent cross-site scripting & forgery attacks
-      res.cookie("access_token", token, { httpOnly: true, sameSite: true });
+      res.cookie("access_token", token, { httpOnly: false, sameSite: false });
 
       // Return a 200 'OK' code
       res
