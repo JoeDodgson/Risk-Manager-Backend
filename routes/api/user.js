@@ -12,7 +12,7 @@ const passportJWT = passport.authenticate("jwt", { session: false });
 // Define user login and authentication operations using userController
 userRouter.post("/register", userController.createUser);
 // Use passportLocal middleware for login
-userRouter.post("/login", passportLocal, userController.userLogin);
+userRouter.post("/login", userController.userLogin);
 // Use passportJWT middleware for logout and authenticated routes
 userRouter.get("/logout", passportJWT, userController.userLogout);
 userRouter.get('/authenticated', passportJWT, userController.authedUser);
