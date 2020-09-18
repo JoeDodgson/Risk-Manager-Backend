@@ -22,19 +22,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
-app.options("*", cors());
+// app.options("*", cors());
 
-app.use((req, res, next) => {
-  res.header(
-    "Access-Control-Allow-Origin",
-    "https://riskmanager-jmni.web.app/"
-  );
+// app.use((req, res, next) => {
+//   res.header(
+//     "Access-Control-Allow-Origin",
+//     "https://riskmanager-jmni.web.app/"
+//   );
 //   res.header(
 //     "Access-Control-Allow-Headers",
 //     "Origin, X-Requested-With, Content-Type, Accept"
 //   );
-  next();
-});
+//   next();
+// });
 
 // Specify API routes
 app.use("/api", router);
