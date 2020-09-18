@@ -88,6 +88,8 @@ module.exports = {
 
   // Logs the user in using passport local middleware
   userLogin : (req, res) => {
+    console.log(`Request: ${req}`);
+    console.log(`req.isAuthenticated: ${req.isAuthenticated()}`);
     // If the request is authenticated, create a token and return in the response
     if (req.isAuthenticated()) {
       // Store the user data from the request
