@@ -23,6 +23,7 @@ passport.use(new JwtStrategy({
     secretOrKey: process.env.SECRET_OR_KEY
 },(payload, done) => {
     User.findById({_id: payload.sub}, (err, user) => {
+
         // if there is any error
         if(err)
         return done(err, false);
@@ -39,6 +40,8 @@ passport.use(new JwtStrategy({
 //  authenticated local strategy using email and passwod
 passport.use(new localStrategy((username, password, done) =>{
     User.findOne({email: username}, (err, user) => {
+        console.log(`Err: ${err}`);
+        console.log(`user: ${user}`);
         // something went wrong with database
         if(err)
         return done(err);
