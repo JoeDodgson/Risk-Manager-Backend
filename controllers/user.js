@@ -88,8 +88,6 @@ module.exports = {
 
   // Logs the user in using passport local middleware
   userLogin : (req, res) => {
-    console.log(req);
-    console.log(req.isAuthenticated());
     // If the request is authenticated, create a token and return in the response
     if (req.isAuthenticated()) {
       // Store the user data from the request
@@ -101,9 +99,12 @@ module.exports = {
         project,
         company,
       } = req.user;
-
+      
+      console.log(`_id: ${_id}`);
+      
       // Create a JSON Web Token using "_id"
       const token = signToken(_id);
+      console.log(`token: ${token}`);
 
       // Set the cookie in the response
       // Set httpOnly and sameSite as true to prevent cross-site scripting & forgery attacks
