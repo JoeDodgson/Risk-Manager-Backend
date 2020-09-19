@@ -100,15 +100,12 @@ module.exports = {
         company,
       } = req.user;
       
-      console.log(`_id: ${_id}`);
-      
       // Create a JSON Web Token using "_id"
       const token = signToken(_id);
-      console.log(`token: ${token}`);
 
       // Set the cookie in the response
       // Set httpOnly and sameSite as true to prevent cross-site scripting & forgery attacks
-      res.cookie("access_token", token, { httpOnly: true, sameSite: "none", secure: true });
+      res.cookie("access_token", token, { httpOnly: false, sameSite: false });
 
       // Return a 200 'OK' code
       res
