@@ -105,13 +105,14 @@ module.exports = {
 
       // Set the cookie in the response
       // Set httpOnly and sameSite as true to prevent cross-site scripting & forgery attacks
-      res.cookie("access_token", token, { domain: "riskmanager-jmni.web.app", httpOnly: false, sameSite: false });
+      // res.cookie("access_token", token, { domain: "riskmanager-jmni.web.app", httpOnly: false, sameSite: false });
 
       // Return a 200 'OK' code
       res
         .status(200)
         .json({
           isAuthenticated: true,
+          token,
           user: { 
             _id,
             email,
