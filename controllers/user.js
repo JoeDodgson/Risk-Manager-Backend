@@ -89,16 +89,18 @@ module.exports = {
   // Logs the user in using passport local middleware
   userLogin : (req, res) => {
     console.log(req);
-    // console.log(req.isAuthenticated());
+    console.log(req.isAuthenticated());
     // If the request is authenticated, create a token and return in the response
-    if (req) {
+    if (req.isAuthenticated()) {
       // Store the user data from the request
-      const _id = "5f5aa9710accf675ecfef662";
-      const email = "J.dodgson@live.co.uk";
-      const firstName = "Joe";
-      const lastName = "Dodgson";
-      const project = ["5f59f053a94acd5aa0e4ebeb"];
-      const company = "Arup";
+      const {
+        _id,
+        email,
+        firstName,
+        lastName,
+        project,
+        company,
+      } = req.user;
 
       // Create a JSON Web Token using "_id"
       const token = signToken(_id);
