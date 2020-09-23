@@ -1,89 +1,47 @@
 const { User } = require("../db/index");
+const bcrypt = require("bcrypt");
 const signToken = require("../middleware/jwt");
 
 module.exports = {
   // Creates a new user
-  createUser : (req, res) => {
+  createUser : async (req, res) => {
     // Store the data from the request
-    const { 
-      email, 
-      firstName, 
-      lastName, 
-      password, 
-      project, 
-      company 
-    } = req.body;
+    try {
+      const { 
+        email, 
+        firstName, 
+        lastName, 
+        password, 
+        project, 
+        company 
+      } = req.body;
+      
+      // to check if user already exists
+      const existingUser = await User.findOne({email: email});
+      if(existingUser)
+      return res
+      .status(400)
+      .json({message: "Account with this email already exists"});
+      
+      // password hashed using bcrypt
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(password, salt);
+      
+      const newUser = new User({
+        email,
+        firstName, 
+        lastName,
+        password: hashedPassword,
+        project, 
+        company 
+      });
 
-    // Find the user by their email
-    User.findOne({ email }, (err, user) => {
-      // If there is an error finding user, return 500 'Internal Server Error' code
-      if (err) {
-        res
-          .status(500)
-          .json({
-            message: {
-              msgBody: "An error occurred",
-              msgErr: true,
-            }
-          });
-      }
-      // If a user with this email exists in the DB, return 406 'Not Acceptable' code
-      if (user) {
-        res.status(406).json({
-          message: {
-            msgBody: "This email is already taken",
-            msgErr: true,
-          },
-        });
-      }
+      const savedUser = await newUser.save();
+      res.json(savedUser)
 
-      //If there is no user with that email, save as a new user
-      else {
-        const newUser = new User({
-          email,
-          firstName,
-          lastName,
-          password,
-          project,
-          company,
-        });
-        newUser.save(err => {
-          // If there is an error saving user, return 500 'Internal Server Error' code
-          if (err) {
-            res
-              .status(500)
-              .json({
-                message: {
-                  msgBody: "An error occured when creating your user",
-                  msgErr: true
-                },
-              });
-          }
-          // If no error occurred, new user was created so return 201 'Created' code
-          else {
-            res
-              .status(201)
-              .json({
-                message: {
-                  msgBody: "Account successfully created",
-                  msgErr: false,
-                },
-              });
-          }
-        });
-      }
-    })
-    // If an error was caught, return a 422 'Unprocessable Entity' code
-    .catch(err =>
-      res
-        .status(422)
-        .json({
-          message: {
-            msgBody: "An error occured",
-            msgErr: true,
-          } 
-        })
-    );
+    } catch (error) {
+      res.status(500).json({error: error.message})
+    }
   },
 
   // Logs the user in using passport local middleware
