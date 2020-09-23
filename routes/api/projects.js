@@ -1,7 +1,7 @@
 // Require in local files and npm modules
 const projectRouter = require("express").Router();
 const riskController = require("../../controllers/index");
-const auth = require("../../middleware/auth")
+const auth = require("../../middleware/auth");
 // Create an express server
 const app = express();
 
