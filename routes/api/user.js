@@ -9,7 +9,7 @@ userRouter.post("/register", userController.createUser);
 userRouter.post("/login", userController.userLogin);
 // Use passportJWT middleware for logout and authenticated routes
 userRouter.get("/logout", auth, userController.userLogout);
-userRouter.get('/authenticated', auth, userController.authedUser);
+userRouter.get('/authenticated', userController.authedUser);
 
 // Define routes for user CRUD operations, using the riskController
 userRouter.get("/info/:id", auth, userController.getUser);
