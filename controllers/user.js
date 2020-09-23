@@ -107,21 +107,20 @@ module.exports = {
   },
 
   // Route to prevent the user from losing authentication from state when they close the browser
-  authedUser: (req, res) => {
-    // Store the email from the request
-    const { email, _id, firstName, lastName, company, project } = req.user;
+  authedUser: async (req, res) => {
+    try {
+      const token = req.header("x-auth-token");
+      if (!token) return res.json(false);
+      const verified = jwt.verify(token, process.env.JWT_SECRET);
+      if (!verified) return res.json(false);
+      const user = await User.findById(verified.id);
+      if (!user) return res.json(false);
 
-    // Return a 200 'OK' code, return user object and isAuthenticated in the response
-    res.status(200).json({
-      isAuthenticated: true,
-      user: { email, _id, firstName, lastName, company, project },
-      message: {
-        msgBody: "User is authenticated",
-        msgErr: false,
-      },
-    });
+      return res.json(true);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   },
-
   // Get data for a single user
   getUser: (req, res) => {
     // Find the user in the DB using the id from req.params
