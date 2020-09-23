@@ -1,6 +1,7 @@
 const { User } = require("../db/index");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 module.exports = {
   // Creates a new user
@@ -14,19 +15,23 @@ module.exports = {
         password,
         project,
         company,
+        jobTitle,
       } = req.body;
-
       // to check if user already exists
-      const existingUser = await User.findOne({ email: email });
+      const existingUser = await User.findOne({ email });
+
       if (existingUser)
         return res
           .status(400)
           .json({ message: "Account with this email already exists" });
 
-      // password hashed using bcrypt
-      const salt = await bcrypt.genSalt();
+      // password hashed using bcryptjs
+      const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
-
+      // console.log(typeof hashedPassword);
+      // console.log(hashedPassword.length);
+      // console.log(hashedPassword);
+      
       const newUser = new User({
         email,
         firstName,
@@ -34,10 +39,16 @@ module.exports = {
         password: hashedPassword,
         project,
         company,
+        jobTitle,
       });
-
       const savedUser = await newUser.save();
-      res.json(savedUser);
+      const token = jwt.sign({ id: savedUser._id }, process.env.JWT_SECRET, {
+        expiresIn: "5hr",
+      });
+      res.status(200).json({
+        token,
+        savedUser,
+      });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -49,16 +60,18 @@ module.exports = {
       // deconstruct email and password from req.body
       const { email, password } = req.body;
       // Check database to see if email entered matches one in the database
-      const user = await User.findOne({ email: email });
+      const user = await User.findOne({ email });
       // if user is not found error message sent back to front end
-      if (!user)
+      if (!user) {
         return res
           .status(400)
           .json({ message: "No account with this email found!" });
-      // check to see if password entered matches the hashedpassword using bcrypt compare
+      }
+      // check to see if password entered matches the hashedpassword using bcryptjs compare
       const isMatch = await bcrypt.compare(password, user.password);
+    
       // if password doesn't match send back error message
-      if (!isMatch)
+      if (!isMatch) {
         return res.status(400).json({
           isAuthenticated: false,
           message: {
@@ -66,6 +79,7 @@ module.exports = {
             msgErr: true,
           },
         });
+      }
       // if password matches and user is found, we will create the jwt for the user and send back user information, an isAuthenticated boolean and the generated token along with a success message
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
         expiresIn: "5hr",
