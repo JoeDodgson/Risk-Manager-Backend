@@ -11,7 +11,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "Dev": "nodemon server.js",
-    "seed": "node scripts/seedsDB.js"
+    "seed": "node scripts/seedsDB.js",
+    "build": "webpack",
+    "heroku-prebuild": "npm run build --prod"
   },
   "repository": {
     "type": "git",
@@ -35,7 +37,8 @@
     "morgan": "^1.10.0",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "webpack": "^4.44.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
