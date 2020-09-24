@@ -20,6 +20,7 @@ const UserSchema = new Schema({
     },
     password: {
         type: String,
+        trim: true,
         required: "Password is Required",
     },
     project: [{
