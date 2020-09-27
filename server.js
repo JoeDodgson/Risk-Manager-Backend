@@ -27,7 +27,8 @@ app.use('/api', router);
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/engineerdb", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useCreateIndex: true
+    useCreateIndex: true,
+    useFindAndModify: false
 }, () => {
     console.log('successfully connected to database');
 }); 
