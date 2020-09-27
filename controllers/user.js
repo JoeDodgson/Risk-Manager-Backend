@@ -31,7 +31,7 @@ module.exports = {
       // console.log(typeof hashedPassword);
       // console.log(hashedPassword.length);
       // console.log(hashedPassword);
-      
+
       const newUser = new User({
         email,
         firstName,
@@ -42,15 +42,21 @@ module.exports = {
         jobTitle,
       });
       const savedUser = await newUser.save();
-      const token = jwt.sign({ id: savedUser._id }, process.env.JWT_SECRET, {
-        expiresIn: "5hr",
-      });
+
       res.status(200).json({
-        token,
-        savedUser,
+        message: {
+          msgBody: "Successfully Registered!",
+          msgErr: false,
+        },
       });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({
+        error: error.message,
+        message: {
+          msgBody: "Registration Failed!",
+          msgErr: true,
+        },
+      });
     }
   },
 
@@ -69,7 +75,7 @@ module.exports = {
       }
       // check to see if password entered matches the hashedpassword using bcryptjs compare
       const isMatch = await bcrypt.compare(password, user.password);
-    
+
       // if password doesn't match send back error message
       if (!isMatch) {
         return res.status(400).json({
@@ -81,13 +87,13 @@ module.exports = {
         });
       }
       // if password matches and user is found, we will create the jwt for the user and send back user information, an isAuthenticated boolean and the generated token along with a success message
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      const userToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
         expiresIn: "5hr",
       });
       res.json({
-        token,
+        userToken,
         isAuthenticated: true,
-        user: {
+        userInfo: {
           id: user._id,
           email: user.email,
           firstName: user.firstName,
@@ -104,24 +110,9 @@ module.exports = {
     }
   },
 
-  // Logs the user out
-  userLogout: (req, res) => {
-    // Clear the 'access_token' cookie which was previously set on login
-    res.clearCookie("access_token");
-
-    // Return a 200 'OK' code and an empty user object in the response
-    res.status(200).json({
-      user: { email: "" },
-      success: true,
-      message: {
-        msgBody: "You have successfully logged out",
-        msgErr: false,
-      },
-    });
-  },
-
   // Route to prevent the user from losing authentication from state when they close the browser
   authedUser: async (req, res) => {
+    
     try {
       const token = req.header("x-auth-token");
       if (!token) return res.json(false);
@@ -130,51 +121,35 @@ module.exports = {
       const user = await User.findById(verified.id);
       if (!user) return res.json(false);
 
-      return res.json(true);
+      return res.json({
+        isAuthed: true,
+        user
+      });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   },
   // Get data for a single user
-  getUser: (req, res) => {
+  getUser: async (req, res) => {
+    try {
+      const user = await User.findById(req.user);
+      res.status(200).json({
+        message: {
+          msgBody: "User successfully returned",
+          msgErr: false,
+        },
+        user,
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
     // Find the user in the DB using the id from req.params
-    User.find({ _id: req.params.id })
-      .then((user, err) => {
-        // If the user exists, return user object with a 200 'OK' code
-        if (user) {
-          res.status(200).json({
-            message: {
-              msgBody: "User successfully returned",
-              msgErr: false,
-            },
-            data: {
-              email: user[0].email,
-              firstName: user[0].firstName,
-              lastName: user[0].lastName,
-              project: user[0].project,
-              company: user[0].company,
-            },
-          });
-        }
-        // If user does not exist in DB, return a 404 'Not Found' code
-        else {
-          res.status(404).json({
-            message: {
-              msgBody: "User not found",
-              msgErr: true,
-            },
-          });
-        }
-      })
-      // If an error was caught, return a 422 'Unprocessable Entity' code
-      .catch((err) =>
-        res.status(422).json({
-          message: {
-            msgBody: "An error occured",
-            msgErr: true,
-          },
-        })
-      );
+
+    // If the user exists, return user object with a 200 'OK' code
+
+    // If user does not exist in DB, return a 404 'Not Found' code
+
+    // If an error was caught, return a 422 'Unprocessable Entity' code
   },
 
   // Get data for a single user
