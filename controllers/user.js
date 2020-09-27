@@ -1,262 +1,187 @@
 const { User } = require("../db/index");
-const signToken = require("../middleware/jwt");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 module.exports = {
   // Creates a new user
-  createUser : (req, res) => {
+  createUser: async (req, res) => {
     // Store the data from the request
-    const { 
-      email, 
-      firstName, 
-      lastName, 
-      password, 
-      project, 
-      company 
-    } = req.body;
-
-    // Find the user by their email
-    User.findOne({ email }, (err, user) => {
-      // If there is an error finding user, return 500 'Internal Server Error' code
-      if (err) {
-        res
-          .status(500)
-          .json({
-            message: {
-              msgBody: "An error occurred",
-              msgErr: true,
-            }
-          });
-      }
-      // If a user with this email exists in the DB, return 406 'Not Acceptable' code
-      if (user) {
-        res.status(406).json({
-          message: {
-            msgBody: "This email is already taken",
-            msgErr: true,
-          },
-        });
-      }
-
-      //If there is no user with that email, save as a new user
-      else {
-        const newUser = new User({
-          email,
-          firstName,
-          lastName,
-          password,
-          project,
-          company,
-        });
-        newUser.save(err => {
-          // If there is an error saving user, return 500 'Internal Server Error' code
-          if (err) {
-            res
-              .status(500)
-              .json({
-                message: {
-                  msgBody: "An error occured when creating your user",
-                  msgErr: true
-                },
-              });
-          }
-          // If no error occurred, new user was created so return 201 'Created' code
-          else {
-            res
-              .status(201)
-              .json({
-                message: {
-                  msgBody: "Account successfully created",
-                  msgErr: false,
-                },
-              });
-          }
-        });
-      }
-    })
-    // If an error was caught, return a 422 'Unprocessable Entity' code
-    .catch(err =>
-      res
-        .status(422)
-        .json({
-          message: {
-            msgBody: "An error occured",
-            msgErr: true,
-          } 
-        })
-    );
-  },
-
-  // Logs the user in using passport local middleware
-  userLogin : (req, res) => {
-    // If the request is authenticated, create a token and return in the response
-    if (req.isAuthenticated()) {
-      // Store the user data from the request
+    try {
       const {
-        _id,
         email,
         firstName,
         lastName,
+        password,
         project,
         company,
-      } = req.user;
+        jobTitle,
+      } = req.body;
+      // to check if user already exists
+      const existingUser = await User.findOne({ email });
 
-      // Create a JSON Web Token using "_id"
-      const token = signToken(_id);
+      if (existingUser)
+        return res
+          .status(400)
+          .json({ message: "Account with this email already exists" });
 
-      // Set the cookie in the response
-      // Set httpOnly and sameSite as true to prevent cross-site scripting & forgery attacks
-      res.cookie("access_token", token, { httpOnly: true, sameSite: true });
+      // password hashed using bcryptjs
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      // console.log(typeof hashedPassword);
+      // console.log(hashedPassword.length);
+      // console.log(hashedPassword);
 
-      // Return a 200 'OK' code
-      res
-        .status(200)
-        .json({
-          isAuthenticated: true,
-          user: { 
-            _id,
-            email,
-            firstName,
-            lastName,
-            project,
-            company,
-          },
-          message: {
-            msgBody: "You have successfully logged in",
-            msgErr: false,
-          },
-        });
-    }
-    // If user is not authenticated, return a 401 'Unauthorized' code
-    else {
-      res
-        .status(401)
-        .json({
-          message: {
-            msgBody: "Invalid login credentials",
-            msgErr: true,
-          }
-        });
-    }
-  },
-
-  // Logs the user out
-  userLogout : (req, res) => {
-    // Clear the 'access_token' cookie which was previously set on login
-    res.clearCookie("access_token");
-
-    // Return a 200 'OK' code and an empty user object in the response
-    res
-      .status(200)
-      .json({ 
-        user: { email: "" },
-        success: true,
-        message: {
-          msgBody: "You have successfully logged out",
-          msgErr: false,
-        }
+      const newUser = new User({
+        email,
+        firstName,
+        lastName,
+        password: hashedPassword,
+        project,
+        company,
+        jobTitle,
       });
-  },
-  
-  // Route to prevent the user from losing authentication from state when they close the browser
-  authedUser : (req, res) => {
-    // Store the email from the request
-    const { email, _id, firstName, lastName, company, project } = req.user;
+      const savedUser = await newUser.save();
 
-    // Return a 200 'OK' code, return user object and isAuthenticated in the response
-    res
-      .status(200)
-      .json({ 
-        isAuthenticated: true,
-        user: {  email, _id, firstName, lastName, company, project },
+      res.status(200).json({
         message: {
-          msgBody: "User is authenticated",
+          msgBody: "Successfully Registered!",
           msgErr: false,
         },
       });
+    } catch (error) {
+      res.status(500).json({
+        error: error.message,
+        message: {
+          msgBody: "Registration Failed!",
+          msgErr: true,
+        },
+      });
+    }
   },
 
+  // Logs the user in using passport local middleware
+  userLogin: async (req, res) => {
+    try {
+      // deconstruct email and password from req.body
+      const { email, password } = req.body;
+      // Check database to see if email entered matches one in the database
+      const user = await User.findOne({ email });
+      // if user is not found error message sent back to front end
+      if (!user) {
+        return res
+          .status(400)
+          .json({ message: "No account with this email found!" });
+      }
+      // check to see if password entered matches the hashedpassword using bcryptjs compare
+      const isMatch = await bcrypt.compare(password, user.password);
+
+      // if password doesn't match send back error message
+      if (!isMatch) {
+        return res.status(400).json({
+          isAuthenticated: false,
+          message: {
+            msgBody: "Invalid Credentials!",
+            msgErr: true,
+          },
+        });
+      }
+      // if password matches and user is found, we will create the jwt for the user and send back user information, an isAuthenticated boolean and the generated token along with a success message
+      const userToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+        expiresIn: "5hr",
+      });
+      res.json({
+        userToken,
+        isAuthenticated: true,
+        userInfo: {
+          id: user._id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          project: user.project,
+        },
+        message: {
+          msgBody: "You have successfully logged in",
+          msgErr: false,
+        },
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  // Route to prevent the user from losing authentication from state when they close the browser
+  authedUser: async (req, res) => {
+    
+    try {
+      const token = req.header("x-auth-token");
+      if (!token) return res.json(false);
+      const verified = jwt.verify(token, process.env.JWT_SECRET);
+      if (!verified) return res.json(false);
+      const user = await User.findById(verified.id);
+      if (!user) return res.json(false);
+
+      return res.json({
+        isAuthed: true,
+        user
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
   // Get data for a single user
-  getUser : (req, res) => {
+  getUser: async (req, res) => {
+    try {
+      const user = await User.findById(req.user);
+      res.status(200).json({
+        message: {
+          msgBody: "User successfully returned",
+          msgErr: false,
+        },
+        user,
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
     // Find the user in the DB using the id from req.params
-    User.find({ _id: req.params.id })
-      .then((user, err) => {       
-        // If the user exists, return user object with a 200 'OK' code 
-        if (user) {
-          res
-            .status(200)
-            .json({
-              message: {
-                msgBody: "User successfully returned",
-                msgErr: false,
-              },
-              data: { 
-                  email: user[0].email,
-                  firstName : user[0].firstName,
-                  lastName : user[0].lastName,
-                  project : user[0].project,
-                  company : user[0].company,
-              },
-            });
-        }
-        // If user does not exist in DB, return a 404 'Not Found' code
-        else {
-        res
-          .status(404)
-          .json({
-            message: {
-              msgBody: "User not found",
-              msgErr: true,
-            }
-          });
-        }
-      })
-      // If an error was caught, return a 422 'Unprocessable Entity' code
-      .catch(err =>
-        res
-          .status(422)
-          .json({
-            message: {
-              msgBody: "An error occured",
-              msgErr: true,
-            } 
-          })
-      );
+
+    // If the user exists, return user object with a 200 'OK' code
+
+    // If user does not exist in DB, return a 404 'Not Found' code
+
+    // If an error was caught, return a 422 'Unprocessable Entity' code
   },
 
   // Get data for a single user
-  getAllUser : (req, res) => {
+  getAllUser: (req, res) => {
     // Find the user in the DB using the id from req.params
     User.find({})
       .sort({ date: -1 })
-      .then(UserData =>
+      .then((UserData) =>
         // If project data was returned from the DB, return a 200 'OK' code
-        res
-          .status(200)
-          .json({
-            message: {
-              msgBody: "All User data successfully returned",
-              msgErr: false,
-            },
-            data: { UserData },
+        res.status(200).json({
+          message: {
+            msgBody: "All User data successfully returned",
+            msgErr: false,
+          },
+          data: { UserData },
         })
       )
       // If an error was caught, return a 422 'Unprocessable Entity' code
-      .catch(err =>
-        res
-          .status(422)
-          .json({
-            message: {
-              msgBody: "Error has occured",
-              msgErr: true
-            }
-          })
+      .catch((err) =>
+        res.status(422).json({
+          message: {
+            msgBody: "Error has occured",
+            msgErr: true,
+          },
+        })
       );
   },
 
   // Change user data
-  updateUser : (req, res) => {
+  updateUser: (req, res) => {
     // Store the id from req.params
-    const { 
+    const {
       id,
       email,
       firstName,
@@ -268,54 +193,47 @@ module.exports = {
 
     // Update the user data using Mongoose
     User.updateOne(
-        { _id: id },
-        {
-          $set: {
-            email,
-            firstName,
-            lastName,
-            password,
-            project,
-            company,
-          },
-        }
-      )
-      .then(databaseChange => {
+      { _id: id },
+      {
+        $set: {
+          email,
+          firstName,
+          lastName,
+          password,
+          project,
+          company,
+        },
+      }
+    )
+      .then((databaseChange) => {
         // If the user was updated, return the database changes with a 200 'OK' code
         if (databaseChange) {
-          res
-            .status(200)
-            .json({
-              message: {
-                msgBody: "User information was successfully updated",
-                msgErr: false,
-              },
-              data: { databaseChange },
-            });
+          res.status(200).json({
+            message: {
+              msgBody: "User information was successfully updated",
+              msgErr: false,
+            },
+            data: { databaseChange },
+          });
         }
         // If the user was not updated, return a 404 'Not Found' code
         else {
-          res
-            .status(404)
-            .json({
-              message: {
-                msgBody: "User not found so the information could not be updated",
-                msgErr: true,
-              },
-            });
+          res.status(404).json({
+            message: {
+              msgBody: "User not found so the information could not be updated",
+              msgErr: true,
+            },
+          });
         }
       })
       // If an error was caught, return a 422 'Unprocessable Entity' code
-      .catch(err =>
-        res
-          .status(422)
-          .json({
-            message: {
-              msgBody: "An error occured",
-              msgErr: true,
-            } 
-          })
+      .catch((err) =>
+        res.status(422).json({
+          message: {
+            msgBody: "An error occured",
+            msgErr: true,
+          },
+        })
       );
   },
 };
-
